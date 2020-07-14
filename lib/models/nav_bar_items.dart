@@ -22,7 +22,7 @@ class BottomNavBarItems {
       BottomNavBarItemModel(
           name: 'Add',
           icon: Icon(
-            Icons.history,
+            Icons.add,
           )),
       BottomNavBarItemModel(
           name: 'Calendar',
@@ -32,5 +32,6 @@ class BottomNavBarItems {
     ];
   }
 
-  UnmodifiableListView<BottomNavBarItemModel> get tabs => UnmodifiableListView(_tabs);
+  UnmodifiableListView<BottomNavBarItemModel> get tabs =>
+      UnmodifiableListView(_tabs);
 }

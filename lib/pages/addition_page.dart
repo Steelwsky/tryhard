@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 
-import 'widgets/custom_bottom_nav_bar.dart';
+import '../widgets/custom_bottom_nav_bar.dart';
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({
+class AdditionPage extends StatefulWidget {
+  AdditionPage({
     Key key,
   }) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _AdditionPage createState() => _AdditionPage();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _AdditionPage extends State<AdditionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +23,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
+              'Addition',
             ),
           ],
         ),
