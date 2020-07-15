@@ -14,21 +14,15 @@ class AdditionPage extends StatefulWidget {
 class _AdditionPage extends State<AdditionPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('TryHard'),
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            'Addition',
+          ),
+        ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Addition',
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 }

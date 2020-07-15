@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:tryhard/pages/addition_page.dart';
+import 'package:tryhard/pages/home_page.dart';
+import 'package:tryhard/pages/new_calendar_page.dart';
 
 //enum Pages {home, add, , calendar }
 
-const int INITIAL_PAGE = 0;
+const int INITIAL_PAGE = 2;
 
 class MyPageController {
   ValueNotifier<int> pageStateNotifier = ValueNotifier(INITIAL_PAGE);
 
-  MyPageController({this.pageController});
+  MyPageController();
 
-  final PageController pageController;
+  final List<Widget> pages = [MyHomePage(), AdditionPage(), CalendarScreen()];
 
   void pageNavBarChange(int pageIndex) async {
-    await pageController.animateToPage(
-      pageIndex,
-      duration: Duration(milliseconds: 400),
-      curve: Curves.decelerate,
-    );
-    pageController.jumpToPage(pageIndex);
     pageStateNotifier.value = pageIndex;
   }
 }
