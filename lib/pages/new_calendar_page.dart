@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
+import 'package:tryhard/pages/addition_page.dart';
 import 'package:tryhard/style/colors.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -77,39 +78,41 @@ class _CalendarScreenState extends State<CalendarScreen> {
               selectedColor: Colors.pink,
               todayColor: Colors.yellow,
               eventColor: Colors.grey,
-              dayOfWeekStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w800, fontSize: 11),
+              dayOfWeekStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 13),
             ),
           ),
-          _buildEventList()
+          AddEvent(),
+          _buildEventList(),
         ],
       ),
     );
   }
 
   Widget _buildEventList() {
-    return _selectedEvents.length == 0
-        ? AddEvent()
-        : Expanded(
-            child: ListView.builder(
-              key: PageStorageKey('calendarMonth'),
-              itemBuilder: (BuildContext context, int index) => Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(width: 1.5, color: Colors.black12),
-                  ),
-                ),
-                padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4.0),
-                child: ListTile(
-                  title: Text(
-                    _selectedEvents[index]['name'].toString(),
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  onTap: () {},
-                ),
-              ),
-              itemCount: _selectedEvents.length,
+    return
+//      _selectedEvents.length == 0
+//        ? AddEvent() :
+        Expanded(
+      child: ListView.builder(
+        key: PageStorageKey('calendarMonth'),
+        itemBuilder: (BuildContext context, int index) => Container(
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(width: 1.5, color: Colors.black12),
             ),
-          );
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 4.0),
+          child: ListTile(
+            title: Text(
+              _selectedEvents[index]['name'].toString(),
+              style: TextStyle(fontSize: 16),
+            ),
+            onTap: () {},
+          ),
+        ),
+        itemCount: _selectedEvents.length,
+      ),
+    );
   }
 }
 
@@ -117,33 +120,31 @@ class AddEvent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 48),
-      child: InkWell(
-        child: Column(
-          children: <Widget>[
-            Text(
-              'Add new one',
-              style: TextStyle(fontSize: 16),
+      padding: const EdgeInsets.only(top: 24),
+      child: Column(
+        children: <Widget>[
+          Text(
+            'Add new one',
+            style: TextStyle(fontSize: 16),
+          ),
+          SizedBox(
+            height: 8,
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.pink,
+              borderRadius: BorderRadius.circular(40.0),
             ),
-            SizedBox(
-              height: 8,
+            child: IconButton(
+              icon: Icon(Icons.add),
+              iconSize: 24,
+              color: Colors.white,
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (_) => AdditionPage()));
+              },
             ),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.pink,
-                borderRadius: BorderRadius.circular(40.0),
-              ),
-              child: IconButton(
-                icon: Icon(Icons.add),
-                iconSize: 24,
-                color: Colors.white,
-                onPressed: () {},
-              ),
-            )
-          ],
-        ),
-        onTap: () {},
-        //todo change tap effect
+          )
+        ],
       ),
     );
   }
