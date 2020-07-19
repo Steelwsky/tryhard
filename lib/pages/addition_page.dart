@@ -32,7 +32,17 @@ class AdditionPage extends StatefulWidget {
 
 class _AdditionPage extends State<AdditionPage> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-  List<Widget> setsAndRepeatsWidgetList = [WeightSetsAndRepeatsWidget(), WeightSetsAndRepeatsWidget()]; //todo rewrite
+
+//  List<Widget> setsAndRepeatsWidgetList = [
+//    WeightSetsAndRepeatsWidget(
+//      weightSetsRepeats: WeightSetsRepeats(weight: 4, sets: 2, repeats: 3),
+//    ),
+//    WeightSetsAndRepeatsWidget(weightSetsRepeats: WeightSetsRepeats(weight: 5, sets: 6, repeats: 3),)
+//  ]; //todo rewrite
+  List<WeightSetsRepeats> dataWSR = [
+    WeightSetsRepeats(weight: 4, sets: 2, repeats: 3),
+    WeightSetsRepeats(weight: 43, sets: 3, repeats: 5),
+  ];
   final TextEditingController _exerciseEditingController = TextEditingController();
   final TextEditingController _commentEditingController = TextEditingController();
   bool f = false;
@@ -72,12 +82,12 @@ class _AdditionPage extends State<AdditionPage> {
                     ],
                   ),
                   Divider(),
-                  WeightSetsRepeatsBuilder(list: setsAndRepeatsWidgetList),
+                  WeightSetsRepeatsBuilder(dataWeightSetsRepeats: dataWSR),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      setsAndRepeatsWidgetList.length <= 15 ? _addSetsAndRepeats() : Container(),
-                      setsAndRepeatsWidgetList.length > 1 ? _deleteSetsAndRepeats() : Container(),
+                      dataWSR.length <= 15 ? _addSetsAndRepeats() : Container(),
+                      dataWSR.length > 1 ? _deleteSetsAndRepeats() : Container(),
                     ],
                   ),
                   _restTimerSelection(),
@@ -185,7 +195,7 @@ class _AdditionPage extends State<AdditionPage> {
       ),
       onPressed: () {
         setState(() {
-          setsAndRepeatsWidgetList.add(WeightSetsAndRepeatsWidget());
+          dataWSR.add(WeightSetsRepeats());
         });
       },
     );
@@ -201,7 +211,7 @@ class _AdditionPage extends State<AdditionPage> {
       ),
       onPressed: () {
         setState(() {
-          setsAndRepeatsWidgetList.removeLast();
+          dataWSR.removeLast();
         });
       },
     );
@@ -211,17 +221,19 @@ class _AdditionPage extends State<AdditionPage> {
 //todo peredelat vse je v builder.
 
 class WeightSetsRepeatsBuilder extends StatefulWidget {
-  WeightSetsRepeatsBuilder({@required this.list, this.data});
+  WeightSetsRepeatsBuilder({
+    @required this.dataWeightSetsRepeats,
+//    this.data,
+  });
 
-  final List<WeightSetsRepeats> data;
-  final List<Widget> list;
+//  final List<WeightSetsRepeats> data;
+  final List<WeightSetsRepeats> dataWeightSetsRepeats;
 
   @override
   _WeightSetsRepeatsBuilderState createState() => _WeightSetsRepeatsBuilderState();
 }
 
 class _WeightSetsRepeatsBuilderState extends State<WeightSetsRepeatsBuilder> {
-
   final dummyData = WeightSetsRepeats();
 
   @override
@@ -233,11 +245,11 @@ class _WeightSetsRepeatsBuilderState extends State<WeightSetsRepeatsBuilder> {
       constraints: BoxConstraints(maxHeight: 1000, minHeight: 50.0),
       child: ListView.builder(
           shrinkWrap: true,
-          itemCount: widget.list.length,
+          itemCount: widget.dataWeightSetsRepeats.length,
           itemBuilder: (context, count) {
             return WeightSetsAndRepeatsWidget(
-              weightSetsRepeats: widget.data == null ? dummyData : widget.data[count],
-            );
+                weightSetsRepeats:
+                    widget.dataWeightSetsRepeats[count] == null ? dummyData : widget.dataWeightSetsRepeats[count]);
           }),
     );
   }
