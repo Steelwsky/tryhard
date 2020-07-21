@@ -31,22 +31,11 @@ class AdditionPage extends StatefulWidget {
 }
 
 class _AdditionPage extends State<AdditionPage> {
-  final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
-
-//  List<Widget> setsAndRepeatsWidgetList = [
-//    WeightSetsAndRepeatsWidget(
-//      weightSetsRepeats: WeightSetsRepeats(weight: 4, sets: 2, repeats: 3),
-//    ),
-//    WeightSetsAndRepeatsWidget(weightSetsRepeats: WeightSetsRepeats(weight: 5, sets: 6, repeats: 3),)
-//  ]; //todo rewrite
-  List<WeightSetsRepeats> dataWSR = [
-    WeightSetsRepeats(weight: 4, sets: 2, repeats: 3),
-    WeightSetsRepeats(weight: 43, sets: 3, repeats: 5),
-  ];
   final TextEditingController _exerciseEditingController = TextEditingController();
   final TextEditingController _commentEditingController = TextEditingController();
   bool f = false;
 
+  //todo valueListenableBuilder. if we change page and return, input data should be there
   @override
   Widget build(BuildContext context) {
     final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
@@ -57,7 +46,7 @@ class _AdditionPage extends State<AdditionPage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             FormBuilder(
-              key: _fbKey,
+              key: PageStorageKey('addition_page'),
               autovalidate: true,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -68,7 +57,9 @@ class _AdditionPage extends State<AdditionPage> {
                     maxLength: null,
                     maxLines: null,
                     controller: _exerciseEditingController,
-                    onChanged: (exercise) {},
+                    onChanged: (exercise) {
+                      gymnasticsController.cacheExerciseForGymnastics(text: exercise);
+                    },
                   ),
                   _pyramidSwitcher(),
                   Row(
@@ -82,22 +73,26 @@ class _AdditionPage extends State<AdditionPage> {
                     ],
                   ),
                   Divider(),
-                  WeightSetsRepeatsBuilder(dataWeightSetsRepeats: dataWSR),
+                  WeightSetsRepeatsBuilder(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      dataWSR.length <= 15 ? _addSetsAndRepeats() : Container(),
-                      dataWSR.length > 1 ? _deleteSetsAndRepeats() : Container(),
+                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.length <= 15
+                          ? _addSetsAndRepeats()
+                          : Container(),
+                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.length > 1
+                          ? _deleteSetsAndRepeats()
+                          : Container(),
                     ],
                   ),
                   _restTimerSelection(),
                   TextField(
-                    decoration: InputDecoration(labelText: "Comment"),
-                    keyboardType: TextInputType.multiline,
-                    maxLength: null,
-                    maxLines: null,
-                    controller: _commentEditingController,
-                  ),
+                      decoration: InputDecoration(labelText: "Comment"),
+                      keyboardType: TextInputType.multiline,
+                      maxLength: null,
+                      maxLines: null,
+                      controller: _commentEditingController,
+                      onChanged: (comment) => gymnasticsController.cacheCommentForGymnastics(comment: comment)),
                 ],
               ),
             ),
@@ -106,13 +101,7 @@ class _AdditionPage extends State<AdditionPage> {
               children: <Widget>[
                 MaterialButton(
                   child: Text("Submit"),
-                  onPressed: () {
-                    if (_fbKey.currentState.saveAndValidate()) {
-                      print(_fbKey.currentState.value);
-
-                      // valueNotifier.value = _fbKey.currentState.value;
-                    }
-                  },
+                  onPressed: () {},
                 ),
               ],
             )
@@ -123,6 +112,7 @@ class _AdditionPage extends State<AdditionPage> {
   }
 
   Widget _restTimerSelection() {
+    final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
@@ -143,8 +133,7 @@ class _AdditionPage extends State<AdditionPage> {
           child: CupertinoTimerPicker(
             alignment: Alignment.center,
             onTimerDurationChanged: (duration) {
-              //todo write rest timer to a valueNotifier?
-
+              gymnasticsController.cacheRestTimeForGymnastics(duration: duration);
               print(duration);
             },
             minuteInterval: 1,
@@ -195,13 +184,16 @@ class _AdditionPage extends State<AdditionPage> {
       ),
       onPressed: () {
         setState(() {
-          dataWSR.add(WeightSetsRepeats());
+          gymnasticsController.gymnastics.value
+                  .enteredWeightSetsRepeats[gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.length] =
+              WeightSetsRepeats();
         });
       },
     );
   }
 
   Widget _deleteSetsAndRepeats() {
+    final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
     return MaterialButton(
       splashColor: Colors.white,
       highlightColor: ThemeData().scaffoldBackgroundColor,
@@ -211,67 +203,65 @@ class _AdditionPage extends State<AdditionPage> {
       ),
       onPressed: () {
         setState(() {
-          dataWSR.removeLast();
+          gymnasticsController.gymnastics.value.enteredWeightSetsRepeats
+              .remove(gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.length - 1);
         });
       },
     );
   }
 }
 
-//todo peredelat vse je v builder.
-
-class WeightSetsRepeatsBuilder extends StatefulWidget {
-  WeightSetsRepeatsBuilder({
-    @required this.dataWeightSetsRepeats,
-//    this.data,
-  });
-
-//  final List<WeightSetsRepeats> data;
-  final List<WeightSetsRepeats> dataWeightSetsRepeats;
-
-  @override
-  _WeightSetsRepeatsBuilderState createState() => _WeightSetsRepeatsBuilderState();
-}
-
-class _WeightSetsRepeatsBuilderState extends State<WeightSetsRepeatsBuilder> {
-  final dummyData = WeightSetsRepeats();
-
+class WeightSetsRepeatsBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-//    return Column(
-//      children: widget.list,
-//    );
+    final gymnasticsController = Provider.of<GymnasticsController>(context);
     return ConstrainedBox(
       constraints: BoxConstraints(maxHeight: 1000, minHeight: 50.0),
-      child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: widget.dataWeightSetsRepeats.length,
-          itemBuilder: (context, count) {
-            return WeightSetsAndRepeatsWidget(
-                weightSetsRepeats:
-                    widget.dataWeightSetsRepeats[count] == null ? dummyData : widget.dataWeightSetsRepeats[count]);
+      child: ValueListenableBuilder<Gymnastics>(
+          valueListenable: gymnasticsController.gymnastics,
+          builder: (_, newGymnastics, __) {
+            return ListView.builder(
+                shrinkWrap: true,
+                itemCount: newGymnastics.enteredWeightSetsRepeats.length,
+                itemBuilder: (context, count) {
+                  return WeightSetsAndRepeatsWidget(
+                      index: count, weightSetsRepeats: newGymnastics.enteredWeightSetsRepeats[count]);
+                });
           }),
     );
   }
 }
 
-class WeightSetsAndRepeatsWidget extends StatelessWidget {
+class WeightSetsAndRepeatsWidget extends StatefulWidget {
   const WeightSetsAndRepeatsWidget({
+    this.index,
     this.weightSetsRepeats,
     Key key,
   }) : super(key: key);
 
+  final int index;
   final WeightSetsRepeats weightSetsRepeats;
+
+  @override
+  _WeightSetsAndRepeatsWidgetState createState() => _WeightSetsAndRepeatsWidgetState();
+}
+
+class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget> {
+  TextEditingController weightEditing;
+  TextEditingController setsEditing;
+  TextEditingController repeatsEditing;
+
+  @override
+  void initState() {
+    super.initState();
+    weightEditing = TextEditingController();
+    setsEditing = TextEditingController();
+    repeatsEditing = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
     final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
-    TextEditingController weightEditing =
-        TextEditingController(text: weightSetsRepeats.weight == null ? '' : weightSetsRepeats.weight.toString());
-    TextEditingController setsEditing =
-        TextEditingController(text: weightSetsRepeats.sets == null ? '' : weightSetsRepeats.sets.toString());
-    TextEditingController repeatsEditing =
-        TextEditingController(text: weightSetsRepeats.repeats == null ? '' : weightSetsRepeats.repeats.toString());
 
     return Column(children: <Widget>[
       Container(
@@ -280,6 +270,7 @@ class WeightSetsAndRepeatsWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Flexible(
+              key: ValueKey('weightFlex'),
               flex: 3,
               child: Container(
                 alignment: Alignment.center,
@@ -292,7 +283,10 @@ class WeightSetsAndRepeatsWidget extends StatelessWidget {
                     hintStyle: TextStyle(fontSize: 16),
                     border: InputBorder.none,
                   ),
-                  onChanged: (input) {},
+                  onChanged: (input) {
+                    gymnasticsController.cacheWeightForGymnastics(
+                        index: widget.index, weight: weightEditing.value.text);
+                  },
                 ),
               ),
             ),
@@ -301,12 +295,13 @@ class WeightSetsAndRepeatsWidget extends StatelessWidget {
               flex: 1,
               child: Container(
                   child: Text(
-                'x',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              )),
+                    'x',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  )),
             ),
             VerticalDivider(),
             Flexible(
+              key: ValueKey('setsFlex'),
               flex: 3,
               child: Container(
                 alignment: Alignment.center,
@@ -320,12 +315,7 @@ class WeightSetsAndRepeatsWidget extends StatelessWidget {
                     border: InputBorder.none,
                   ),
                   onChanged: (input) {
-//                    gymnasticsController.gymnastics.value = Gymnastics(
-//                        exercise: gymnasticsController.gymnastics.value.exercise,
-//                        isPyramid: gymnasticsController.gymnastics.value.isPyramid,
-//                        listSetsRepeats: gymnasticsController.gymnastics.value.listSetsRepeats
-//                            .add(SetsRepeats(weight: 3, sets: 3, repeats: 3)) //todo ??????
-//                    );
+                    gymnasticsController.cacheSetsForGymnastics(index: widget.index, sets: setsEditing.value.text);
                   },
                 ),
               ),
@@ -335,12 +325,13 @@ class WeightSetsAndRepeatsWidget extends StatelessWidget {
               flex: 1,
               child: Container(
                   child: Text(
-                'x',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              )),
+                    'x',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  )),
             ),
             VerticalDivider(),
             Flexible(
+              key: ValueKey('RepeatsFlex'),
               flex: 3,
               child: Container(
                 alignment: Alignment.center,
@@ -353,7 +344,10 @@ class WeightSetsAndRepeatsWidget extends StatelessWidget {
                     hintStyle: TextStyle(fontSize: 16),
                     border: InputBorder.none,
                   ),
-                  onChanged: (input) {},
+                  onChanged: (input) {
+                    gymnasticsController.cacheRepeatsForGymnastics(
+                        index: widget.index, repeats: repeatsEditing.value.text);
+                  },
                 ),
               ),
             ),
