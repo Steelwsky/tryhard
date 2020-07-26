@@ -2,6 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:tryhard/models/gymnastics.dart';
 
 class GymnasticsController {
+  GymnasticsController() {
+    gymnasticsList.value.add(Gymnastics(
+      exercise: '111',
+      isPyramid: false,
+      enteredWeightSetsRepeats: {0: WeightSetsRepeats()},
+      timeForRest: Duration(minutes: 0, seconds: 0),
+      comment: '222',
+    ));
+  }
+
+  ValueNotifier<List<Gymnastics>> gymnasticsList = ValueNotifier([]);
+
   ValueNotifier<Gymnastics> gymnastics = ValueNotifier(Gymnastics(
     exercise: '',
     isPyramid: false,
@@ -10,15 +22,26 @@ class GymnasticsController {
     comment: '',
   ));
 
-  void cacheExerciseForGymnastics({String text}) {
+  void cacheExerciseForGymnastics({String exercise}) {
     gymnastics.value = Gymnastics(
-      exercise: text,
+      exercise: exercise,
       isPyramid: gymnastics.value.isPyramid,
       enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
       timeForRest: gymnastics.value.timeForRest,
       comment: gymnastics.value.comment,
     );
     print(gymnastics.value.exercise);
+  }
+
+  void cacheIsPyramid({bool value}) {
+    gymnastics.value = Gymnastics(
+      exercise: gymnastics.value.exercise,
+      isPyramid: value,
+      enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
+      timeForRest: gymnastics.value.timeForRest,
+      comment: gymnastics.value.comment,
+    );
+    print(gymnastics.value.isPyramid);
   }
 
   void cacheWeightForGymnastics({int index, String weight}) {
@@ -82,7 +105,26 @@ class GymnasticsController {
     print(gymnastics.value.comment);
   }
 
+  void resetToDefaultGymnastics() {
+    gymnastics.value = Gymnastics(
+      exercise: '',
+      isPyramid: false,
+      enteredWeightSetsRepeats: {0: WeightSetsRepeats()},
+      timeForRest: Duration(minutes: 0, seconds: 0),
+      comment: '',
+    );
+  }
+
   void saveGymnastics() {
     //todo if line of WSR is empty, then remove this line and save
+    print('hey: ${gymnasticsList.value.length}');
+
+    List<Gymnastics> _finalList = [];
+    _finalList.addAll(gymnasticsList.value);
+    _finalList.add(gymnastics.value);
+    gymnasticsList.value =
+        _finalList; // gymnasticsList.value = [Gymnastics(), Gymnastics()]; -- gymnasticsList.value.add(gymnastics.value)
+    print(gymnasticsList.value.length);
+    resetToDefaultGymnastics();
   }
 }

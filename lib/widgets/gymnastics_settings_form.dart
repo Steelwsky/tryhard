@@ -1,39 +1,27 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:tryhard/controller/gymnastics_controller.dart';
 import 'package:tryhard/models/gymnastics.dart';
 import 'package:tryhard/style/colors.dart';
 
-/* todo 1. подготовить ui элементы для создания простого упражнения.
-            как минимум:
-            1.1 текстовые поля
-            1.2 пресеты из количества повторений х1 х5 х10 х15 х20 и свое значение
-            1.3
-        2. подготовить модель для упражнения
-        3. отобразить упражнение в календаре
-        4. хранение на стороне firestore
-        5. по хорошему не забыть покрывать тестами
-
-        //todo 1. сделать форму add 2. сделать список для всех упражнений одной тренировки.
-           3 отобразить значки тренировки на календаре
-* */
-
-class AdditionPage extends StatefulWidget {
-  AdditionPage({
+class GymnasticsSettingsForm extends StatefulWidget {
+  GymnasticsSettingsForm({
     Key key,
+    this.gymnastics,
   }) : super(key: key);
 
+  final Gymnastics gymnastics;
+
   @override
-  _AdditionPage createState() => _AdditionPage();
+  _GymnasticsSettingsForm createState() => _GymnasticsSettingsForm();
 }
 
-class _AdditionPage extends State<AdditionPage> {
+//todo if we chose already existed gymnastics, we should fill all the settings in the form
+
+class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
   final TextEditingController _exerciseEditingController = TextEditingController();
   final TextEditingController _commentEditingController = TextEditingController();
-  bool f = false;
 
   //todo valueListenableBuilder. if we change page and return, input data should be there
   @override
@@ -45,7 +33,7 @@ class _AdditionPage extends State<AdditionPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            FormBuilder(
+            Form(
               key: PageStorageKey('addition_page'),
               autovalidate: true,
               child: Column(
@@ -58,14 +46,18 @@ class _AdditionPage extends State<AdditionPage> {
                     maxLines: null,
                     controller: _exerciseEditingController,
                     onChanged: (exercise) {
-                      gymnasticsController.cacheExerciseForGymnastics(text: exercise);
+                      gymnasticsController.cacheExerciseForGymnastics(exercise: exercise);
                     },
                   ),
                   _pyramidSwitcher(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
-                      Flexible(flex: 3, child: Text('Weight')),
+                      Flexible(
+                          flex: 3,
+                          child: Text(
+                            'Weight',
+                          )),
                       Flexible(flex: 1, child: Container()),
                       Flexible(flex: 3, child: Text('Sets')),
                       Flexible(flex: 1, child: Container()),
@@ -99,9 +91,33 @@ class _AdditionPage extends State<AdditionPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                MaterialButton(
-                  child: Text("Submit"),
-                  onPressed: () {},
+                Padding(
+                  padding: const EdgeInsets.only(top: 32.0),
+                  child: MaterialButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(
+                        fontSize: 18,
+                      ),
+                    ),
+                    onPressed: () {},
+                  ),
+                ),
+                SizedBox(
+                  width: 16,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 32.0),
+                  child: MaterialButton(
+                    child: Text(
+                      "Submit",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
+                    ),
+                    onPressed: () {
+//                      gymnasticsController.saveGymnastics();
+                      Navigator.pop(context, gymnasticsController.saveGymnastics());
+                    },
+                  ),
                 ),
               ],
             )
@@ -122,7 +138,7 @@ class _AdditionPage extends State<AdditionPage> {
             children: <Widget>[
               Text(
                 'Rest time',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 18),
               ),
             ],
           ),
@@ -146,6 +162,7 @@ class _AdditionPage extends State<AdditionPage> {
   }
 
   Widget _pyramidSwitcher() {
+    final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
     return Column(
       children: <Widget>[
         Padding(
@@ -155,14 +172,14 @@ class _AdditionPage extends State<AdditionPage> {
             children: <Widget>[
               Text(
                 'Pyramid',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: 18),
               ),
               CupertinoSwitch(
-                value: f,
+                value: gymnasticsController.gymnastics.value.isPyramid,
                 activeColor: DARK_PURPLE,
-                onChanged: (a) {
+                onChanged: (isPyramid) {
                   setState(() {
-                    f = a;
+                    gymnasticsController.cacheIsPyramid(value: isPyramid);
                   });
                 },
               ),
@@ -180,7 +197,7 @@ class _AdditionPage extends State<AdditionPage> {
       highlightColor: ThemeData().scaffoldBackgroundColor,
       child: Text(
         'Add',
-        style: TextStyle(fontSize: 12),
+        style: TextStyle(fontSize: 14),
       ),
       onPressed: () {
         setState(() {
@@ -199,7 +216,7 @@ class _AdditionPage extends State<AdditionPage> {
       highlightColor: ThemeData().scaffoldBackgroundColor,
       child: Text(
         'Remove',
-        style: TextStyle(fontSize: 12),
+        style: TextStyle(fontSize: 14),
       ),
       onPressed: () {
         setState(() {
@@ -280,7 +297,6 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
                   maxLines: 1,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: InputDecoration(
-                    hintStyle: TextStyle(fontSize: 16),
                     border: InputBorder.none,
                   ),
                   onChanged: (input) {
@@ -295,9 +311,9 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
               flex: 1,
               child: Container(
                   child: Text(
-                    'x',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  )),
+                'x',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              )),
             ),
             VerticalDivider(),
             Flexible(
@@ -311,7 +327,6 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
                   maxLines: 1,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    hintStyle: TextStyle(fontSize: 16),
                     border: InputBorder.none,
                   ),
                   onChanged: (input) {
@@ -325,9 +340,9 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
               flex: 1,
               child: Container(
                   child: Text(
-                    'x',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                  )),
+                'x',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+              )),
             ),
             VerticalDivider(),
             Flexible(
@@ -341,7 +356,6 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
                   maxLines: 1,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    hintStyle: TextStyle(fontSize: 16),
                     border: InputBorder.none,
                   ),
                   onChanged: (input) {

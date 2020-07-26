@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clean_calendar/flutter_clean_calendar.dart';
-import 'package:tryhard/pages/addition_page.dart';
-import 'package:tryhard/style/colors.dart';
+import 'package:tryhard/pages/gymnastics_list_workout.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -23,17 +22,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   DateTime _selectedDay;
 
   final Map<DateTime, List> _events = {
-    DateTime(2020, 7, 7): [
-      {'name': 'Event A', 'isDone': true},
-    ],
-    DateTime(2020, 7, 9): [
-      {'name': 'Event A', 'isDone': true},
-      {'name': 'Event B', 'isDone': true},
-    ],
-    DateTime(2020, 7, 10): [
-      {'name': 'Event A', 'isDone': true},
-      {'name': 'Event B', 'isDone': true},
-    ],
     DateTime(2020, 7, 13): [
       {'name': 'Event A', 'isDone': true},
       {'name': 'Event B', 'isDone': true},
@@ -81,7 +69,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               dayOfWeekStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 13),
             ),
           ),
-          AddEvent(),
+          AddWorkout(day: _selectedDay),
           _buildEventList(),
         ],
       ),
@@ -89,10 +77,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   Widget _buildEventList() {
-    return
-//      _selectedEvents.length == 0
-//        ? AddEvent() :
-        Expanded(
+    return Expanded(
       child: ListView.builder(
         key: PageStorageKey('calendarMonth'),
         itemBuilder: (BuildContext context, int index) => Container(
@@ -116,7 +101,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 }
 
-class AddEvent extends StatelessWidget {
+class AddWorkout extends StatelessWidget {
+  AddWorkout({Key key, this.day}) : super(key: key);
+
+  final DateTime day;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -140,7 +129,9 @@ class AddEvent extends StatelessWidget {
               iconSize: 24,
               color: Colors.white,
               onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (_) => AdditionPage()));
+                //todo add workout widget in the listView
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => GymnasticsListForWorkout(dateTime: day)));
               },
             ),
           )
