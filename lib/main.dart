@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:tryhard/all_pages.dart';
 import 'package:tryhard/controller/page_controller.dart';
+import 'package:tryhard/controller/workout_controller.dart';
 import 'package:tryhard/style/colors.dart';
 
 import 'controller/gymnastics_controller.dart';
@@ -21,8 +22,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
         providers: [
+          Provider<WorkoutController>(create: (_) => WorkoutController()),
+          Provider<GymnasticsController>(create: (_) => GymnasticsController()),
           Provider<MyPageController>(create: (_) => MyPageController()),
-          Provider<GymnasticsController>(create: (_) => GymnasticsController())
         ],
         child: MaterialApp(
           title: 'Flutter Demo',

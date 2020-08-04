@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:tryhard/controller/workout_controller.dart';
 
 class WorkoutTimePicker extends StatefulWidget {
   const WorkoutTimePicker({
@@ -18,6 +20,7 @@ class _WorkoutTimePickerState extends State<WorkoutTimePicker> {
 
   @override
   Widget build(BuildContext context) {
+    final WorkoutController workoutController = Provider.of<WorkoutController>(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -43,9 +46,11 @@ class _WorkoutTimePickerState extends State<WorkoutTimePicker> {
               style: TextStyle(fontSize: 16, color: Colors.blue),
             ),
             onPressed: () {
-              DatePicker.showTimePicker(context, showTitleActions: true, showSecondsColumn: false, onConfirm: (date) {
+              DatePicker.showTimePicker(context, showTitleActions: true, showSecondsColumn: false, onConfirm: (time) {
+                //todo save to workout
+                workoutController.saveTimeWorkoutBegins(time);
                 setState(() {
-                  _time = date;
+                  _time = time;
                 });
               }, currentTime: _time, locale: LocaleType.en);
             })

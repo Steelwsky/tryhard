@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tryhard/controller/gymnastics_controller.dart';
+import 'package:tryhard/controller/workout_controller.dart';
 import 'package:tryhard/models/gymnastics.dart';
 import 'package:tryhard/style/colors.dart';
 
@@ -20,13 +21,26 @@ class GymnasticsSettingsForm extends StatefulWidget {
 //todo if we chose already existed gymnastics, we should fill all the settings in the form
 
 class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
-  final TextEditingController _exerciseEditingController = TextEditingController();
-  final TextEditingController _commentEditingController = TextEditingController();
+  TextEditingController _exerciseEditingController;
+  TextEditingController _commentEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.gymnastics != null) {
+      _exerciseEditingController = TextEditingController(text: widget.gymnastics.exercise);
+      _commentEditingController = TextEditingController(text: widget.gymnastics.comment);
+    } else {
+      _exerciseEditingController = TextEditingController();
+      _commentEditingController = TextEditingController();
+    }
+  }
 
   //todo valueListenableBuilder. if we change page and return, input data should be there
   @override
   Widget build(BuildContext context) {
     final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
+    final WorkoutController workoutController = Provider.of<WorkoutController>(context);
     return ListView(children: [
       Padding(
         padding: const EdgeInsets.all(16.0),
@@ -100,7 +114,10 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                         fontSize: 18,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      gymnasticsController.resetToDefaultGymnastics();
+                      Navigator.pop(context);
+                    },
                   ),
                 ),
                 SizedBox(
@@ -114,8 +131,16 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
                     ),
                     onPressed: () {
-//                      gymnasticsController.saveGymnastics();
-                      Navigator.pop(context, gymnasticsController.saveGymnastics());
+                      if (widget.gymnastics != null) {
+                        print('widget.gymnastics != null, ${widget.gymnastics.comment}');
+                        workoutController.overwriteExistedGymnastics(gymnastics: gymnasticsController.gymnastics.value);
+                      } else {
+                        print('widget.gymnastics == null');
+                        gymnasticsController.assignGuidToGymnastics();
+                        workoutController.addGymnasticsToWorkout(gymnastics: gymnasticsController.gymnastics.value);
+                      }
+                      //todo update global
+                      Navigator.pop(context);
                     },
                   ),
                 ),
@@ -148,6 +173,7 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
           width: 270,
           child: CupertinoTimerPicker(
             alignment: Alignment.center,
+            initialTimerDuration: gymnasticsController.gymnastics.value.timeForRest,
             onTimerDurationChanged: (duration) {
               gymnasticsController.cacheRestTimeForGymnastics(duration: duration);
               print(duration);
@@ -175,8 +201,8 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                 style: TextStyle(fontSize: 18),
               ),
               CupertinoSwitch(
-                value: gymnasticsController.gymnastics.value.isPyramid,
                 activeColor: DARK_PURPLE,
+                value: gymnasticsController.gymnastics.value.isPyramid,
                 onChanged: (isPyramid) {
                   setState(() {
                     gymnasticsController.cacheIsPyramid(value: isPyramid);
@@ -239,6 +265,7 @@ class WeightSetsRepeatsBuilder extends StatelessWidget {
           builder: (_, newGymnastics, __) {
             return ListView.builder(
                 shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 itemCount: newGymnastics.enteredWeightSetsRepeats.length,
                 itemBuilder: (context, count) {
                   return WeightSetsAndRepeatsWidget(
@@ -271,9 +298,9 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
   @override
   void initState() {
     super.initState();
-    weightEditing = TextEditingController();
-    setsEditing = TextEditingController();
-    repeatsEditing = TextEditingController();
+    weightEditing = TextEditingController(text: widget.weightSetsRepeats.weight);
+    setsEditing = TextEditingController(text: widget.weightSetsRepeats.sets);
+    repeatsEditing = TextEditingController(text: widget.weightSetsRepeats.repeats);
   }
 
   @override

@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:tryhard/models/gymnastics.dart';
+import 'package:uuid/uuid.dart';
 
 class GymnasticsController {
-  GymnasticsController() {
-    gymnasticsList.value.add(Gymnastics(
-      exercise: '111',
-      isPyramid: false,
-      enteredWeightSetsRepeats: {0: WeightSetsRepeats()},
-      timeForRest: Duration(minutes: 0, seconds: 0),
-      comment: '222',
-    ));
-  }
-
-  ValueNotifier<List<Gymnastics>> gymnasticsList = ValueNotifier([]);
-
   ValueNotifier<Gymnastics> gymnastics = ValueNotifier(Gymnastics(
+    guid: '',
     exercise: '',
     isPyramid: false,
     enteredWeightSetsRepeats: {0: WeightSetsRepeats()},
@@ -22,25 +12,15 @@ class GymnasticsController {
     comment: '',
   ));
 
+  String _getUuidFromHash(String hash) => Uuid().v5(hash, 'UUID');
+
   void cacheExerciseForGymnastics({String exercise}) {
-    gymnastics.value = Gymnastics(
-      exercise: exercise,
-      isPyramid: gymnastics.value.isPyramid,
-      enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-      timeForRest: gymnastics.value.timeForRest,
-      comment: gymnastics.value.comment,
-    );
+    gymnastics.value = currentGymnastics(exercise: exercise);
     print(gymnastics.value.exercise);
   }
 
   void cacheIsPyramid({bool value}) {
-    gymnastics.value = Gymnastics(
-      exercise: gymnastics.value.exercise,
-      isPyramid: value,
-      enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-      timeForRest: gymnastics.value.timeForRest,
-      comment: gymnastics.value.comment,
-    );
+    gymnastics.value = currentGymnastics(value: value);
     print(gymnastics.value.isPyramid);
   }
 
@@ -84,25 +64,24 @@ class GymnasticsController {
   }
 
   void cacheRestTimeForGymnastics({Duration duration}) {
-    gymnastics.value = Gymnastics(
-      exercise: gymnastics.value.exercise,
-      isPyramid: gymnastics.value.isPyramid,
-      enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-      timeForRest: duration,
-      comment: gymnastics.value.comment,
-    );
+    gymnastics.value = currentGymnastics(duration: duration);
     print(gymnastics.value.timeForRest);
   }
 
   void cacheCommentForGymnastics({String comment}) {
+    gymnastics.value = currentGymnastics(comment: comment);
+    print(gymnastics.value.comment);
+  }
+
+  void assignGuidToGymnastics() {
     gymnastics.value = Gymnastics(
+      guid: _getUuidFromHash(gymnastics.value.hashCode.toString()),
       exercise: gymnastics.value.exercise,
       isPyramid: gymnastics.value.isPyramid,
       enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
       timeForRest: gymnastics.value.timeForRest,
-      comment: comment,
+      comment: gymnastics.value.comment,
     );
-    print(gymnastics.value.comment);
   }
 
   void resetToDefaultGymnastics() {
@@ -115,16 +94,67 @@ class GymnasticsController {
     );
   }
 
-  void saveGymnastics() {
-    //todo if line of WSR is empty, then remove this line and save
-    print('hey: ${gymnasticsList.value.length}');
-
-    List<Gymnastics> _finalList = [];
-    _finalList.addAll(gymnasticsList.value);
-    _finalList.add(gymnastics.value);
-    gymnasticsList.value =
-        _finalList; // gymnasticsList.value = [Gymnastics(), Gymnastics()]; -- gymnasticsList.value.add(gymnastics.value)
-    print(gymnasticsList.value.length);
-    resetToDefaultGymnastics();
+  Gymnastics currentGymnastics({String guid, String exercise, bool value, Duration duration, String comment}) {
+    if (guid != null) {
+      return Gymnastics(
+        guid: guid,
+        exercise: gymnastics.value.exercise,
+        isPyramid: gymnastics.value.isPyramid,
+        enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
+        timeForRest: gymnastics.value.timeForRest,
+        comment: gymnastics.value.comment,
+      );
+    }
+    if (exercise != null) {
+      return Gymnastics(
+        guid: gymnastics.value.guid,
+        exercise: exercise,
+        isPyramid: gymnastics.value.isPyramid,
+        enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
+        timeForRest: gymnastics.value.timeForRest,
+        comment: gymnastics.value.comment,
+      );
+    }
+    if (duration != null) {
+      return Gymnastics(
+        guid: gymnastics.value.guid,
+        exercise: gymnastics.value.exercise,
+        isPyramid: gymnastics.value.isPyramid,
+        enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
+        timeForRest: duration,
+        comment: gymnastics.value.comment,
+      );
+    }
+    if (comment != null) {
+      return Gymnastics(
+        guid: gymnastics.value.guid,
+        exercise: gymnastics.value.exercise,
+        isPyramid: gymnastics.value.isPyramid,
+        enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
+        timeForRest: gymnastics.value.timeForRest,
+        comment: comment,
+      );
+    } else {
+      return Gymnastics(
+        guid: gymnastics.value.guid,
+        exercise: gymnastics.value.exercise,
+        isPyramid: value,
+        enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
+        timeForRest: gymnastics.value.timeForRest,
+        comment: gymnastics.value.comment,
+      );
+    }
   }
+
+//  void saveGymnastics() {
+//    //todo if line of WSR is empty, then remove this line and save
+//    print('hey: ${gymnasticsList.value.length}');
+//
+//    List<Gymnastics> _finalList = [];
+//    _finalList.addAll(gymnasticsList.value);
+//    _finalList.add(gymnastics.value);
+//    gymnasticsList.value =
+//        _finalList; // gymnasticsList.value = [Gymnastics(), Gymnastics()]; -- gymnasticsList.value.add(gymnastics.value)
+//    print(gymnasticsList.value.length);
+//  }
 }
