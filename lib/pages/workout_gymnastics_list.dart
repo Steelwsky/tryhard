@@ -8,50 +8,70 @@ import 'package:tryhard/models/workout.dart';
 import 'package:tryhard/pages/gymnastics_settings_page.dart';
 import 'package:tryhard/widgets/workout_begins_time_picker.dart';
 
-class GymnasticsListForWorkout extends StatelessWidget {
+class GymnasticsListForWorkout extends StatefulWidget {
   GymnasticsListForWorkout({Key key, this.workout}) : super(key: key);
 
   final Workout workout;
 
   @override
+  _GymnasticsListForWorkoutState createState() => _GymnasticsListForWorkoutState();
+}
+
+class _GymnasticsListForWorkoutState extends State<GymnasticsListForWorkout> {
+  TextEditingController _workoutCommentEditingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _workoutCommentEditingController = TextEditingController(text: widget.workout.comment);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
     final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
-    TextEditingController _workoutCommentEditingController;
+
     return Scaffold(
       appBar: AppBar(
-          title: Text(workout.time == null
+          title: Text(widget.workout.time == null
               ? DateFormat('dd/MM/yyyy').format(DateTime.now())
-              : DateFormat('dd/MM/yyyy').format(workout.time))),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: WorkoutTimePicker(),
-          ),
-          Flexible(
-            flex: 4,
-            child: Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-              child: TextField(
-                decoration: InputDecoration(labelText: "Comment"),
-                keyboardType: TextInputType.multiline,
-                maxLength: null,
-                maxLines: null,
-                controller: _workoutCommentEditingController,
-                onChanged: (comment) {
-                  workoutController.saveComment(comment: comment);
-                },
+              : DateFormat('dd/MM/yyyy').format(widget.workout.time))),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: WorkoutTimePicker(),
+            ),
+            Flexible(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0),
+                child: TextField(
+                  decoration: InputDecoration(labelText: "Comment"),
+                  keyboardType: TextInputType.multiline,
+                  maxLength: null,
+                  maxLines: null,
+                  controller: _workoutCommentEditingController,
+                  onChanged: (comment) {
+                    workoutController.saveComment(comment: comment);
+                  },
+                ),
               ),
             ),
-          ),
-          Flexible(
-            flex: 8,
-            child: GymnasticsList(),
-          )
+            SizedBox(
+              height: 24,
+            ),
+            Divider(),
+            Flexible(
+              flex: 8,
+              child: GymnasticsList(),
+            )
 //          Flexible(flex: 8, child: GymnasticsList(workoutGymnastics: workout.gymnasticsList)),
-        ],
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),

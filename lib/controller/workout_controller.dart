@@ -4,10 +4,6 @@ import 'package:tryhard/models/workout.dart';
 import 'package:uuid/uuid.dart';
 
 class WorkoutController {
-  WorkoutController() {
-//    dayWorkouts.value = allUserWorkouts.value.dayWorkouts[_getDateFromWorkout(DateTime.now())];
-  }
-
   ValueNotifier<AllUserWorkouts> allUserWorkouts = ValueNotifier(AllUserWorkouts(dayWorkouts: {}));
 
   ValueNotifier<List<Workout>> dayWorkouts = ValueNotifier([]); //TODO USE IT
@@ -17,6 +13,7 @@ class WorkoutController {
   String _getUuidFromHash() => Uuid().v4();
 
   DateTime _getDateFromWorkout(DateTime dt) {
+    print('dt: ${DateTime(dt.year, dt.month, dt.day)}');
     return DateTime(dt.year, dt.month, dt.day);
   }
 
@@ -51,35 +48,19 @@ class WorkoutController {
     dayWorkouts.value.add(workout.value);
   }
 
-  void addNewOrInsertToExistedWorkoutDay(DateTime date) {
+  void createAndAddNewWorkoutToCalendar(DateTime date) {
     createWorkout(dateTime: date);
-    allUserWorkouts.value.dayWorkouts.containsKey(date) ? _insertToExistedWorkoutDay(date) : _addNewWorkoutDay(date);
+    _addWorkoutToADay(date);
   }
 
 // creating new empty workout day and insert in in allUserWorkouts
-  void _addNewWorkoutDay(DateTime date) {
-    print('add');
-    final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
-    _mapDaysWorkouts[date] = dayWorkouts.value;
-    allUserWorkouts.value = AllUserWorkouts(dayWorkouts: _mapDaysWorkouts);
+  void _addWorkoutToADay(DateTime date) {
+    _updateAllUserWorkouts();
   }
 
-  void _insertToExistedWorkoutDay(DateTime date) {
-    print('insert');
-    final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
-    _mapDaysWorkouts[date] = dayWorkouts.value;
-
-//    _mapDaysWorkouts.update(date, (value) {
-////      value.add(workout.value);
-//    dayWorkouts.value.add(value)
-//      return value;
-//    });
-
-    allUserWorkouts.value = AllUserWorkouts(dayWorkouts: _mapDaysWorkouts);
-  }
-
-  // TODO
   void saveTimeWorkoutBegins(DateTime time) {
+    Workout _workout = workout.value;
+    print('_workout guid: ${_workout.guid}');
     workout.value = Workout(
         guid: workout.value.guid,
         time: time,
@@ -87,19 +68,10 @@ class WorkoutController {
         gymnasticsList: workout.value.gymnasticsList);
     print('saveTimeWorkoutBegins: ${workout.value.time}, ${workout.value.guid}');
 
-//    allUserWorkouts.value = AllUserWorkouts(dayWorkouts: allUserWorkouts.value.dayWorkouts);
-
-    final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
-    _mapDaysWorkouts[_getDateFromWorkout(workout.value.time)].forEach((element) {
-      if (element.guid == workout.value.guid) {
-        print('found');
-        element = workout.value;
-      }
-    });
-    allUserWorkouts.value = AllUserWorkouts(dayWorkouts: _mapDaysWorkouts);
+    _updateDayWorkouts();
+    _updateAllUserWorkouts();
   }
 
-  // TODO
   void saveComment({String comment}) {
     workout.value = Workout(
         guid: workout.value.guid,
@@ -107,6 +79,9 @@ class WorkoutController {
         comment: comment,
         gymnasticsList: workout.value.gymnasticsList);
     print('comment: ${workout.value.comment}');
+
+    _updateDayWorkouts();
+    _updateAllUserWorkouts();
   }
 
   void addGymnasticsToWorkout({Gymnastics gymnastics}) {
@@ -128,20 +103,20 @@ class WorkoutController {
           }
           return e;
         }).toList());
+  }
 
-//    workoutList.value[8].gymnasticsList[2] = gymnastics; //todo how to find [8] and [2]
+  void _updateAllUserWorkouts() {
+    final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
+    _mapDaysWorkouts[_getDateFromWorkout(workout.value.time)] = dayWorkouts.value;
+    allUserWorkouts.value = AllUserWorkouts(dayWorkouts: _mapDaysWorkouts);
+  }
+
+  void _updateDayWorkouts() {
+    dayWorkouts.value = dayWorkouts.value.map((e) {
+      if (e.guid == workout.value.guid) {
+        return e = workout.value;
+      }
+      return e;
+    }).toList();
   }
 }
-
-// Future<void> addToHistory({RssItem item}) async {
-//    if (await isNewsInHistory(uuid: item.guid) == false) {
-//      myDatabase.addItem(item);
-//      historyIdsNotifier.value = myDatabase.retrieveViewedItemIds();
-//      preparedRssFeedNotifier.value = preparedRssFeedNotifier.value.toList().map((f) {
-//        if (f.item.guid == item.guid) {
-//          return f.copyWith(isViewed: true);
-//        }
-//        return f;
-//      });
-//    }
-//  }

@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tryhard/models/gymnastics.dart';
 
-//class DayUserWorkouts {
-//  DayUserWorkouts({this.guid, this.dateTime, this.dayWorkouts});
-//
-//  final String guid;
-//  final DateTime dateTime; //should be mm/dd/yyyy
-//  final List<Workout> dayWorkouts;
-//}
-
 class Workout {
   Workout({this.guid, @required this.time, this.comment, @required this.gymnasticsList});
 
@@ -17,9 +9,18 @@ class Workout {
   final String comment;
   final List<Gymnastics> gymnasticsList;
 
-//  Workout copyWith({List<Gymnastics> gymnastics}) {
-//    return Workout(dateTime: dateTime, gymnasticsList: gymnastics);
-//  }
+  Workout copyWith({String copyGuid, DateTime copyTime, String copyComment, List<Gymnastics> copyGymnastics}) {
+    if (guid != null) {
+      return Workout(guid: copyGuid, time: time, comment: comment, gymnasticsList: gymnasticsList);
+    }
+    if (time != null) {
+      return Workout(guid: guid, time: copyTime, comment: comment, gymnasticsList: gymnasticsList);
+    }
+    if (comment != null) {
+      return Workout(guid: guid, time: time, comment: copyComment, gymnasticsList: gymnasticsList);
+    } else
+      return Workout(guid: guid, time: time, comment: copyComment, gymnasticsList: copyGymnastics);
+  }
 }
 
 class AllUserWorkouts {
@@ -27,3 +28,7 @@ class AllUserWorkouts {
 
   final Map<DateTime, List<Workout>> dayWorkouts;
 }
+
+//FeedRssItem copyWith({bool isViewed}) {
+//    return FeedRssItem(isViewed: isViewed, item: item);
+//  }

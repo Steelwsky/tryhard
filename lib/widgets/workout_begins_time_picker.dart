@@ -16,6 +16,7 @@ class WorkoutTimePicker extends StatefulWidget {
 //TODO change picker's minutes from 1,2,3,4,5 to 1,5,10,15
 
 class _WorkoutTimePickerState extends State<WorkoutTimePicker> {
+  //using it just for rebuilding time
   DateTime _time = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, 9, 0);
 
   @override
@@ -35,7 +36,7 @@ class _WorkoutTimePickerState extends State<WorkoutTimePicker> {
         Padding(
           padding: const EdgeInsets.only(top: 10.0, left: 16, right: 16),
           child: Text(
-            DateFormat('HH:mm').format(_time),
+            DateFormat('HH:mm').format(workoutController.workout.value.time),
             style: TextStyle(fontSize: 18),
           ),
         ),
@@ -52,7 +53,7 @@ class _WorkoutTimePickerState extends State<WorkoutTimePicker> {
                 setState(() {
                   _time = time;
                 });
-              }, currentTime: _time, locale: LocaleType.en);
+              }, currentTime: workoutController.workout.value.time, locale: LocaleType.en);
             })
       ],
     );

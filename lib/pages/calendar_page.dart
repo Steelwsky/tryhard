@@ -83,8 +83,11 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   key: PageStorageKey('gymnasticsList'),
                   children: dayWorkouts
                       .map((workout) => ListTile(
+                            subtitle: Text(
+                              '${workout.comment}',
+                              maxLines: 3,
+                            ),
                             title: Text('${DateFormat('HH:mm').format(workout.time)}'),
-                            subtitle: Text('${workout.comment}'),
                             onTap: () {
                               //todo set this workout as valueNotifier
                               workoutController.setWorkout(workout);
@@ -122,9 +125,10 @@ class AddWorkout extends StatelessWidget {
             ),
             onPressed: () {
 //              workoutController.createWorkout(dateTime: workoutDate);
-              workoutController.addNewOrInsertToExistedWorkoutDay(workoutDate);
+              workoutController.createAndAddNewWorkoutToCalendar(workoutDate);
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => GymnasticsListForWorkout(
+                  builder: (context) =>
+                      GymnasticsListForWorkout(
                         workout: workoutController.workout.value,
                       )));
             },
