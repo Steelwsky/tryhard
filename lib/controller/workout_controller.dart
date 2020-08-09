@@ -3,6 +3,8 @@ import 'package:tryhard/models/gymnastics.dart';
 import 'package:tryhard/models/workout.dart';
 import 'package:uuid/uuid.dart';
 
+//TODO 1.create workout, 2. add gymnastics, 3. return to 1 4. no gymnastics exercise text in workouts list in calendar page
+
 class WorkoutController {
   ValueNotifier<AllUserWorkouts> allUserWorkouts = ValueNotifier(AllUserWorkouts(dayWorkouts: {}));
 
@@ -88,12 +90,20 @@ class WorkoutController {
     print('addGymnasticsToWorkout: ${gymnastics.exercise} and ${gymnastics.comment}');
     final _gymnasticsList = workout.value.gymnasticsList;
     _gymnasticsList.add(gymnastics);
-    workout.value = Workout(guid: workout.value.guid, time: workout.value.time, gymnasticsList: _gymnasticsList);
+    workout.value = Workout(
+        guid: workout.value.guid,
+        comment: workout.value.comment,
+        time: workout.value.time,
+        gymnasticsList: _gymnasticsList);
     print(workout.value.gymnasticsList);
+
+    _updateDayWorkouts();
+    _sortByTime();
+//    _updateAllUserWorkouts();
   }
 
   void overwriteExistedGymnastics({Gymnastics gymnastics}) {
-    print('overwriteExistedGymnastics. hash: ${gymnastics.guid}');
+    print('overwriteExistedGymnastics. guid: ${gymnastics.guid}');
     workout.value = Workout(
         guid: workout.value.guid,
         time: workout.value.time,
@@ -103,8 +113,14 @@ class WorkoutController {
           }
           return e;
         }).toList());
+    print('overwriteExistedGymnastics. date: ${workout.value.time}');
+
+    _updateDayWorkouts();
+    _sortByTime();
+//    _updateAllUserWorkouts();
   }
 
+  //todo here i need to save to firestore
   void _updateAllUserWorkouts() {
     final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
     _mapDaysWorkouts[_getDateFromWorkout(workout.value.time)] = dayWorkouts.value;
@@ -119,4 +135,7 @@ class WorkoutController {
       return e;
     }).toList();
   }
+
+  //TODO
+  void _sortByTime() {}
 }

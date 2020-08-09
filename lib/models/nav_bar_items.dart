@@ -15,11 +15,6 @@ class BottomNavBarItems {
   BottomNavBarItems() {
     _tabs = [
       BottomNavBarItemModel(
-          name: 'Home',
-          icon: Icon(
-            Icons.home,
-          )),
-      BottomNavBarItemModel(
           name: 'Add',
           icon: Icon(
             Icons.add,
@@ -29,9 +24,13 @@ class BottomNavBarItems {
           icon: Icon(
             Icons.calendar_today,
           )),
+      BottomNavBarItemModel(
+          name: 'Profile',
+          icon: Icon(
+            Icons.person,
+          )),
     ];
   }
 
-  UnmodifiableListView<BottomNavBarItemModel> get tabs =>
-      UnmodifiableListView(_tabs);
+  UnmodifiableListView<BottomNavBarItemModel> get tabs => UnmodifiableListView(_tabs);
 }

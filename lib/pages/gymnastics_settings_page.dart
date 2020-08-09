@@ -23,11 +23,14 @@ class GymnasticsSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('title'),
+        title: gymnastics == null
+            ? Text('Creating')
+            : Text(
+                '${gymnastics.exercise}',
+                maxLines: 1,
+              ),
       ),
       body: GymnasticsSettingsForm(gymnastics: gymnastics),
     );
   }
 }
-
-

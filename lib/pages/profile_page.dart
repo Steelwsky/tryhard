@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../widgets/custom_bottom_nav_bar.dart';
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({
+class ProfilePage extends StatefulWidget {
+  ProfilePage({
     Key key,
   }) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Center(

@@ -49,7 +49,10 @@ class CalendarTile extends StatelessWidget {
     } else {
       int eventCount = 0;
       return InkWell(
+        //did none splash and highlight
         onTap: onDateSelected,
+        highlightColor: Colors.white,
+        splashColor: Colors.white,
         child: Padding(
           padding: const EdgeInsets.all(1.0),
           child: Container(
@@ -57,7 +60,7 @@ class CalendarTile extends StatelessWidget {
                 ? BoxDecoration(
                     shape: BoxShape.circle,
                     color: selectedColor != null
-                        ? Utils.isSameDay(this.date, DateTime.now()) ? Colors.red : selectedColor
+                        ? Utils.isSameDay(this.date, DateTime.now()) ? Colors.blue : selectedColor
                         : Theme.of(context).primaryColor,
                   )
                 : BoxDecoration(),
@@ -89,7 +92,8 @@ class CalendarTile extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               //todo add something like previous isDone
-                              color: Theme.of(context).primaryColor,
+                              color: Colors.purple,
+//                              color: Theme.of(context).primaryColor,
 //                              color: event["isDone"]
 //                                  ? eventDoneColor ??
 //                                      Theme.of(context).primaryColor

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "153642266215",
+    "firebase_url": "https://tryhard-b7721.firebaseio.com",
+    "project_id": "tryhard-b7721",
+    "storage_bucket": "tryhard-b7721.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:153642266215:android:a0e841cf0e9947e913aec2",
+        "android_client_info": {
+          "package_name": "com.vadimzadorskii.tryhard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "153642266215-jidujscmcm8j7ehj005ukpvgq352g5et.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBB5smTxEwCaBu8dYIchkpGmlt7bpO2aDk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "153642266215-jidujscmcm8j7ehj005ukpvgq352g5et.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

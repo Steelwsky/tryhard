@@ -29,6 +29,3 @@ class AllUserWorkouts {
   final Map<DateTime, List<Workout>> dayWorkouts;
 }
 
-//FeedRssItem copyWith({bool isViewed}) {
-//    return FeedRssItem(isViewed: isViewed, item: item);
-//  }

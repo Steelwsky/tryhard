@@ -112,7 +112,10 @@ class _CalendarState extends State<Calendar> {
 
     if (!widget.hideTodayIcon) {
       todayIcon = InkWell(
-        child: Text('Today'),
+        child: Text(
+          'Today',
+          style: TextStyle(color: Colors.blue),
+        ),
         onTap: resetToToday,
       );
     } else {
@@ -140,7 +143,9 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget get calendarGridView {
-    return Container(
+    return AnimatedContainer(
+      curve: Curves.fastOutSlowIn,
+      duration: Duration(milliseconds: 600),
       child: SimpleGestureDetector(
         onSwipeUp: _onSwipeUp,
         onSwipeDown: _onSwipeDown,
@@ -243,7 +248,7 @@ class _CalendarState extends State<Calendar> {
 
   TextStyle configureDateStyle(monthStarted, monthEnded) {
     TextStyle dateStyles;
-    final TextStyle body1Style = Theme.of(context).textTheme.body1;
+    final TextStyle body1Style = Theme.of(context).textTheme.bodyText1;
 
     if (isExpanded) {
       final TextStyle body1StyleDisabled = body1Style.copyWith(
@@ -261,60 +266,18 @@ class _CalendarState extends State<Calendar> {
     return dateStyles;
   }
 
-  Widget get expansionButtonRow {
-    if (widget.isExpandable) {
-      return GestureDetector(
-        onTap: toggleExpanded,
-        child: Container(
-          color: widget.bottomBarColor ?? Color.fromRGBO(200, 200, 200, 0.2),
-          height: 40,
-          margin: EdgeInsets.only(top: 8.0),
-          padding: EdgeInsets.all(0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              SizedBox(width: 40.0),
-              Text(
-                Utils.fullDayFormat(selectedDate),
-                style: widget.bottomBarTextStyle ?? TextStyle(fontSize: 13),
-              ),
-              IconButton(
-                onPressed: toggleExpanded,
-                iconSize: 25.0,
-                padding: EdgeInsets.symmetric(vertical: 5.0, horizontal: 10.0),
-                icon: isExpanded
-                    ? Icon(
-                        Icons.arrow_drop_up,
-                        color: widget.bottomBarArrowColor ?? Colors.black,
-                      )
-                    : Icon(
-                        Icons.arrow_drop_down,
-                        color: widget.bottomBarArrowColor ?? Colors.black,
-                      ),
-              ),
-            ],
-          ),
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
+      curve: Curves.decelerate,
+      duration: Duration(milliseconds: 600),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           nameAndIconRow,
-          ExpansionCrossFade(
-            collapsed: calendarGridView,
-            expanded: calendarGridView,
-            isExpanded: isExpanded,
-          ),
-          expansionButtonRow
+          calendarGridView,
+//          expansionButtonRow
         ],
       ),
     );
@@ -476,29 +439,5 @@ class _CalendarState extends State<Calendar> {
 
     var lastToDisplay = last.add(new Duration(days: daysAfter));
     return Utils.daysInRange(firstToDisplay, lastToDisplay).toList();
-  }
-}
-
-class ExpansionCrossFade extends StatelessWidget {
-  final Widget collapsed;
-  final Widget expanded;
-  final bool isExpanded;
-
-  ExpansionCrossFade({this.collapsed, this.expanded, this.isExpanded});
-
-  @override
-  Widget build(BuildContext context) {
-    return Flexible(
-      flex: 1,
-      child: AnimatedCrossFade(
-        firstChild: collapsed,
-        secondChild: expanded,
-        firstCurve: const Interval(0.0, 1.0, curve: Curves.fastOutSlowIn),
-        secondCurve: const Interval(0.0, 1.0, curve: Curves.fastOutSlowIn),
-        sizeCurve: Curves.decelerate,
-        crossFadeState: isExpanded ? CrossFadeState.showSecond : CrossFadeState.showFirst,
-        duration: const Duration(milliseconds: 300),
-      ),
-    );
   }
 }

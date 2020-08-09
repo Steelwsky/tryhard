@@ -18,8 +18,6 @@ class GymnasticsSettingsForm extends StatefulWidget {
   _GymnasticsSettingsForm createState() => _GymnasticsSettingsForm();
 }
 
-//todo if we chose already existed gymnastics, we should fill all the settings in the form
-
 class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
   TextEditingController _exerciseEditingController;
   TextEditingController _commentEditingController;
@@ -36,7 +34,6 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
     }
   }
 
-  //todo valueListenableBuilder. if we change page and return, input data should be there
   @override
   Widget build(BuildContext context) {
     final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
@@ -131,6 +128,7 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
                     ),
                     onPressed: () {
+                      //todo update gymnastics for calendar page and workout_gymnastics_list!!!!!!!!!!
                       if (widget.gymnastics != null) {
                         print('widget.gymnastics != null, ${widget.gymnastics.comment}');
                         workoutController.overwriteExistedGymnastics(gymnastics: gymnasticsController.gymnastics.value);

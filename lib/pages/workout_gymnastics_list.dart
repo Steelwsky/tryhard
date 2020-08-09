@@ -88,12 +88,10 @@ class _GymnasticsListForWorkoutState extends State<GymnasticsListForWorkout> {
 class GymnasticsList extends StatelessWidget {
   const GymnasticsList({
     Key key,
-//    this.workoutGymnastics,
   }) : super(key: key);
 
-//  final List<Gymnastics> workoutGymnastics;
 
-  //todo rewrite, should be ValueListenableBuilder<Workout> which already has a List<Gymnastics>
+  //todo sort by time of workouts
   @override
   Widget build(BuildContext context) {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
@@ -104,12 +102,23 @@ class GymnasticsList extends StatelessWidget {
               key: PageStorageKey('gymnasticsList'),
               children: currentWorkout.gymnasticsList
                   .map((gymnastics) => ListTile(
-                        title: Text('${currentWorkout.gymnasticsList.indexOf(gymnastics) + 1} ${gymnastics.exercise}'),
-                        subtitle: Text(gymnastics.comment),
+                        leading: Text(
+                          '${currentWorkout.gymnasticsList.indexOf(gymnastics) + 1}',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        title: Text(
+                          '${gymnastics.exercise}',
+                          maxLines: 3,
+                        ),
+                        subtitle: Text(
+                          gymnastics.comment,
+                          maxLines: 3,
+                        ),
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(builder: (_) => GymnasticsSettingsPage(gymnastics: gymnastics)),
                           );
+                          print(gymnastics.guid);
                         },
                       ))
                   .toList());

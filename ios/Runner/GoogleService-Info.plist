@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>153642266215-l7o589p3n6bbvgrcafkl0o654kqm6kl8.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.153642266215-l7o589p3n6bbvgrcafkl0o654kqm6kl8</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAHRBM5GqgJ1JDsJNJZ30q2tIBM84NtbIw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>153642266215</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.vadimzadorskii.tryhard</string>
+	<key>PROJECT_ID</key>
+	<string>tryhard-b7721</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tryhard-b7721.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:153642266215:ios:87d69dd21d5dbd0b13aec2</string>
+	<key>DATABASE_URL</key>
+	<string>https://tryhard-b7721.firebaseio.com</string>
+</dict>
+</plist>

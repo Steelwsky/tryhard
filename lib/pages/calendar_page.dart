@@ -33,17 +33,13 @@ class _CalendarScreenState extends State<CalendarScreen> {
               children: <Widget>[
                 Flexible(
                   flex: 4,
-                  child: AnimatedContainer(
-                    curve: Curves.decelerate,
-                    duration: Duration(milliseconds: 600),
+                  child: Container(
                     key: PageStorageKey('calendar'),
                     child: Calendar(
                       startOnMonday: true,
                       weekDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
                       events: allWorkouts.dayWorkouts,
                       onDateSelected: (date) {
-                        //todo change dayWorkouts here
-//                        workoutController.changeDayWorkoutList(date);
                         setState(() {
                           _selectedDay = date;
                         });
@@ -53,8 +49,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       isExpanded: true,
                       hideBottomBar: false,
                       eventDoneColor: Colors.green,
-                      selectedColor: Colors.pink,
-                      todayColor: Colors.yellow,
+                      selectedColor: Colors.blue,
+                      todayColor: Colors.blue,
                       eventColor: Colors.grey,
                       dayOfWeekStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 13),
                     ),
@@ -74,7 +70,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   Widget _buildEventList() {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
     return ValueListenableBuilder<List<Workout>>(
-        //todo i feel that using AllUserWorkouts here is not a good idea. mb create new List<Workout> valueNotifier!!!!
         valueListenable: workoutController.dayWorkouts,
         builder: (_, dayWorkouts, __) {
           return dayWorkouts.length == 0
@@ -83,13 +78,21 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   key: PageStorageKey('gymnasticsList'),
                   children: dayWorkouts
                       .map((workout) => ListTile(
-                            subtitle: Text(
+                            leading: Text(
+                              DateFormat('HH:mm').format(workout.time),
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            title: Text(
                               '${workout.comment}',
                               maxLines: 3,
+                              style: TextStyle(fontSize: 18),
                             ),
-                            title: Text('${DateFormat('HH:mm').format(workout.time)}'),
+                            subtitle: Row(
+                              children: [
+                                for (var item in workout.gymnasticsList) Text('${item.exercise} '),
+                              ],
+                            ),
                             onTap: () {
-                              //todo set this workout as valueNotifier
                               workoutController.setWorkout(workout);
                               Navigator.of(context).push(
                                 MaterialPageRoute(builder: (_) => GymnasticsListForWorkout(workout: workout)),
@@ -124,7 +127,6 @@ class AddWorkout extends StatelessWidget {
               ),
             ),
             onPressed: () {
-//              workoutController.createWorkout(dateTime: workoutDate);
               workoutController.createAndAddNewWorkoutToCalendar(workoutDate);
               Navigator.of(context).push(MaterialPageRoute(
                   builder: (context) =>
