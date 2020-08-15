@@ -32,7 +32,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
                 Flexible(
-                  flex: 4,
+                  flex: 6,
                   child: Container(
                     key: PageStorageKey('calendar'),
                     child: Calendar(
@@ -113,7 +113,7 @@ class AddWorkout extends StatelessWidget {
   Widget build(BuildContext context) {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 16, right: 16),
+      padding: const EdgeInsets.only(top: 4, right: 16),
       child: Column(
         children: <Widget>[
           FlatButton(

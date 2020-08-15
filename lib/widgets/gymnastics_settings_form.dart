@@ -80,10 +80,10 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.length <= 15
+                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length <= 15
                           ? _addSetsAndRepeats()
                           : Container(),
-                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.length > 1
+                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length > 1
                           ? _deleteSetsAndRepeats()
                           : Container(),
                     ],
@@ -171,7 +171,7 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
           width: 270,
           child: CupertinoTimerPicker(
             alignment: Alignment.center,
-            initialTimerDuration: gymnasticsController.gymnastics.value.timeForRest,
+            initialTimerDuration: gymnasticsController.gymnastics.value.restTime,
             onTimerDurationChanged: (duration) {
               gymnasticsController.cacheRestTimeForGymnastics(duration: duration);
               print(duration);
@@ -225,8 +225,8 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
       ),
       onPressed: () {
         setState(() {
-          gymnasticsController.gymnastics.value
-                  .enteredWeightSetsRepeats[gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.length] =
+          gymnasticsController.gymnastics.value.enteredWeightSetsRepeats
+                  .mapWsr[gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length] =
               WeightSetsRepeats();
         });
       },
@@ -244,8 +244,8 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
       ),
       onPressed: () {
         setState(() {
-          gymnasticsController.gymnastics.value.enteredWeightSetsRepeats
-              .remove(gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.length - 1);
+          gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr
+              .remove(gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length - 1);
         });
       },
     );
@@ -264,10 +264,10 @@ class WeightSetsRepeatsBuilder extends StatelessWidget {
             return ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: newGymnastics.enteredWeightSetsRepeats.length,
+                itemCount: newGymnastics.enteredWeightSetsRepeats.mapWsr.length,
                 itemBuilder: (context, count) {
                   return WeightSetsAndRepeatsWidget(
-                      index: count, weightSetsRepeats: newGymnastics.enteredWeightSetsRepeats[count]);
+                      index: count, weightSetsRepeats: newGymnastics.enteredWeightSetsRepeats.mapWsr[count]);
                 });
           }),
     );
@@ -324,7 +324,7 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
                   decoration: InputDecoration(
                     border: InputBorder.none,
                   ),
-                  onChanged: (input) {
+                  onChanged: (_) {
                     gymnasticsController.cacheWeightForGymnastics(
                         index: widget.index, weight: weightEditing.value.text);
                   },

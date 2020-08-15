@@ -9,6 +9,7 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
+//TODO show profile settings without any changes
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {

@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:tryhard/main.dart';
 import 'package:tryhard/models/gymnastics.dart';
+import 'package:tryhard/models/user.dart';
 import 'package:tryhard/models/workout.dart';
 import 'package:uuid/uuid.dart';
 
-//TODO 1.create workout, 2. add gymnastics, 3. return to 1 4. no gymnastics exercise text in workouts list in calendar page
 
 class WorkoutController {
+  WorkoutController({this.myDatabase});
+
   ValueNotifier<AllUserWorkouts> allUserWorkouts = ValueNotifier(AllUserWorkouts(dayWorkouts: {}));
 
   ValueNotifier<List<Workout>> dayWorkouts = ValueNotifier([]); //TODO USE IT
 
   ValueNotifier<Workout> workout = ValueNotifier(Workout(time: null, gymnasticsList: []));
+
+  final CloudStorage myDatabase;
 
   String _getUuidFromHash() => Uuid().v4();
 
@@ -100,6 +105,8 @@ class WorkoutController {
     _updateDayWorkouts();
     _sortByTime();
 //    _updateAllUserWorkouts();
+    myDatabase.saveGymnastics(gymnastics, User(uid: 'aw21s2aSa2dxc'));
+    myDatabase.saveWorkout(workout.value);
   }
 
   void overwriteExistedGymnastics({Gymnastics gymnastics}) {
@@ -125,6 +132,8 @@ class WorkoutController {
     final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
     _mapDaysWorkouts[_getDateFromWorkout(workout.value.time)] = dayWorkouts.value;
     allUserWorkouts.value = AllUserWorkouts(dayWorkouts: _mapDaysWorkouts);
+
+//    myDatabase.saveAllUserWorkouts(allUserWorkouts.value, User(uid: 'aw21s2aSa2dxc'));
   }
 
   void _updateDayWorkouts() {

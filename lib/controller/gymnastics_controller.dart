@@ -7,8 +7,8 @@ class GymnasticsController {
     guid: '',
     exercise: '',
     isPyramid: false,
-    enteredWeightSetsRepeats: {0: WeightSetsRepeats()},
-    timeForRest: Duration(minutes: 0, seconds: 0),
+    enteredWeightSetsRepeats: MapWSR(mapWsr: {0: WeightSetsRepeats()}),
+    restTime: Duration(minutes: 0, seconds: 0),
     comment: '',
   ));
 
@@ -28,44 +28,44 @@ class GymnasticsController {
     Map<int, WeightSetsRepeats> _lineSetsMap = {
       index: WeightSetsRepeats(
         weight: weight,
-        sets: gymnastics.value.enteredWeightSetsRepeats[index].sets,
-        repeats: gymnastics.value.enteredWeightSetsRepeats[index].repeats,
+        sets: gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].sets,
+        repeats: gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].repeats,
       )
     };
-    gymnastics.value.enteredWeightSetsRepeats.addAll(_lineSetsMap);
+    gymnastics.value.enteredWeightSetsRepeats.mapWsr.addAll(_lineSetsMap);
 
-    print(gymnastics.value.enteredWeightSetsRepeats[index].weight);
+    print(gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].weight);
   }
 
   void cacheSetsForGymnastics({int index, String sets}) {
     Map<int, WeightSetsRepeats> _lineSetsMap = {
       index: WeightSetsRepeats(
-        weight: gymnastics.value.enteredWeightSetsRepeats[index].weight,
+        weight: gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].weight,
         sets: sets,
-        repeats: gymnastics.value.enteredWeightSetsRepeats[index].repeats,
+        repeats: gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].repeats,
       )
     };
-    gymnastics.value.enteredWeightSetsRepeats.addAll(_lineSetsMap);
+    gymnastics.value.enteredWeightSetsRepeats.mapWsr.addAll(_lineSetsMap);
 
-    print(gymnastics.value.enteredWeightSetsRepeats[index].sets);
+    print(gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].sets);
   }
 
   void cacheRepeatsForGymnastics({int index, String repeats}) {
     Map<int, WeightSetsRepeats> _lineSetsMap = {
       index: WeightSetsRepeats(
-        weight: gymnastics.value.enteredWeightSetsRepeats[index].weight,
-        sets: gymnastics.value.enteredWeightSetsRepeats[index].sets,
+        weight: gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].weight,
+        sets: gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].sets,
         repeats: repeats,
       )
     };
-    gymnastics.value.enteredWeightSetsRepeats.addAll(_lineSetsMap);
+    gymnastics.value.enteredWeightSetsRepeats.mapWsr.addAll(_lineSetsMap);
 
-    print(gymnastics.value.enteredWeightSetsRepeats[index].repeats);
+    print(gymnastics.value.enteredWeightSetsRepeats.mapWsr[index].repeats);
   }
 
   void cacheRestTimeForGymnastics({Duration duration}) {
     gymnastics.value = currentGymnastics(duration: duration);
-    print(gymnastics.value.timeForRest);
+    print(gymnastics.value.restTime);
   }
 
   void cacheCommentForGymnastics({String comment}) {
@@ -79,7 +79,7 @@ class GymnasticsController {
       exercise: gymnastics.value.exercise,
       isPyramid: gymnastics.value.isPyramid,
       enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-      timeForRest: gymnastics.value.timeForRest,
+      restTime: gymnastics.value.restTime,
       comment: gymnastics.value.comment,
     );
   }
@@ -88,8 +88,8 @@ class GymnasticsController {
     gymnastics.value = Gymnastics(
       exercise: '',
       isPyramid: false,
-      enteredWeightSetsRepeats: {0: WeightSetsRepeats()},
-      timeForRest: Duration(minutes: 0, seconds: 0),
+      enteredWeightSetsRepeats: MapWSR(mapWsr: {0: WeightSetsRepeats()}),
+      restTime: Duration(minutes: 0, seconds: 0),
       comment: '',
     );
   }
@@ -101,7 +101,7 @@ class GymnasticsController {
         exercise: gymnastics.value.exercise,
         isPyramid: gymnastics.value.isPyramid,
         enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-        timeForRest: gymnastics.value.timeForRest,
+        restTime: gymnastics.value.restTime,
         comment: gymnastics.value.comment,
       );
     }
@@ -111,7 +111,7 @@ class GymnasticsController {
         exercise: exercise,
         isPyramid: gymnastics.value.isPyramid,
         enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-        timeForRest: gymnastics.value.timeForRest,
+        restTime: gymnastics.value.restTime,
         comment: gymnastics.value.comment,
       );
     }
@@ -121,7 +121,7 @@ class GymnasticsController {
         exercise: gymnastics.value.exercise,
         isPyramid: gymnastics.value.isPyramid,
         enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-        timeForRest: duration,
+        restTime: duration,
         comment: gymnastics.value.comment,
       );
     }
@@ -131,7 +131,7 @@ class GymnasticsController {
         exercise: gymnastics.value.exercise,
         isPyramid: gymnastics.value.isPyramid,
         enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-        timeForRest: gymnastics.value.timeForRest,
+        restTime: gymnastics.value.restTime,
         comment: comment,
       );
     } else {
@@ -140,21 +140,10 @@ class GymnasticsController {
         exercise: gymnastics.value.exercise,
         isPyramid: value,
         enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-        timeForRest: gymnastics.value.timeForRest,
+        restTime: gymnastics.value.restTime,
         comment: gymnastics.value.comment,
       );
     }
   }
 
-//  void saveGymnastics() {
-//    //todo if line of WSR is empty, then remove this line and save
-//    print('hey: ${gymnasticsList.value.length}');
-//
-//    List<Gymnastics> _finalList = [];
-//    _finalList.addAll(gymnasticsList.value);
-//    _finalList.add(gymnastics.value);
-//    gymnasticsList.value =
-//        _finalList; // gymnasticsList.value = [Gymnastics(), Gymnastics()]; -- gymnasticsList.value.add(gymnastics.value)
-//    print(gymnasticsList.value.length);
-//  }
 }

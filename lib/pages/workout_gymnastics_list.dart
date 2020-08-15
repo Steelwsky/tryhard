@@ -46,7 +46,7 @@ class _GymnasticsListForWorkoutState extends State<GymnasticsListForWorkout> {
               child: WorkoutTimePicker(),
             ),
             Flexible(
-              flex: 3,
+              flex: 4,
               child: Padding(
                 padding: const EdgeInsets.only(left: 16.0, right: 16.0),
                 child: TextField(

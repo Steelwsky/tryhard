@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tryhard/controller/page_controller.dart';
+import 'package:tryhard/models/user.dart';
 
 import 'widgets/custom_bottom_nav_bar.dart';
 
 class AllPages extends StatelessWidget {
+//  GoogleSignIn _googleSignIn; //todo create drawer and use it there. mb for logout function
+
+  AllPages(User user
+//    GoogleSignIn signIn,
+      ) {
+    final User _user = user;
+//    _googleSignIn = signIn;
+    print('**************************${_user.uid}');
+  }
+
   @override
   Widget build(BuildContext context) {
     final pageController = Provider.of<MyPageController>(context);

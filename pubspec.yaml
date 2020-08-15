@@ -19,6 +19,9 @@ dependencies:
   uuid: ^2.2.0
   intl: ^0.16.1
   date_utils: ^0.1.0+3
+  firebase_auth: ^0.16.1
+  google_sign_in: ^4.5.1
+  json_serializable: ^3.4.0
 
 dev_dependencies:
   flutter_test:
