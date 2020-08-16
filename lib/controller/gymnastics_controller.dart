@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 
 class GymnasticsController {
   ValueNotifier<Gymnastics> gymnastics = ValueNotifier(Gymnastics(
+    workoutGuid: '',
     guid: '',
     exercise: '',
     isPyramid: false,
@@ -14,13 +15,16 @@ class GymnasticsController {
 
   String _getUuidFromHash(String hash) => Uuid().v5(hash, 'UUID');
 
+  void linkWorkoutGuidToGymnastics(String workoutGuid) =>
+      gymnastics.value = _currentGymnastics(workoutGuid: workoutGuid);
+
   void cacheExerciseForGymnastics({String exercise}) {
-    gymnastics.value = currentGymnastics(exercise: exercise);
+    gymnastics.value = _currentGymnastics(exercise: exercise);
     print(gymnastics.value.exercise);
   }
 
   void cacheIsPyramid({bool value}) {
-    gymnastics.value = currentGymnastics(value: value);
+    gymnastics.value = _currentGymnastics(value: value);
     print(gymnastics.value.isPyramid);
   }
 
@@ -64,28 +68,21 @@ class GymnasticsController {
   }
 
   void cacheRestTimeForGymnastics({Duration duration}) {
-    gymnastics.value = currentGymnastics(duration: duration);
+    gymnastics.value = _currentGymnastics(duration: duration);
     print(gymnastics.value.restTime);
   }
 
   void cacheCommentForGymnastics({String comment}) {
-    gymnastics.value = currentGymnastics(comment: comment);
+    gymnastics.value = _currentGymnastics(comment: comment);
     print(gymnastics.value.comment);
   }
 
-  void assignGuidToGymnastics() {
-    gymnastics.value = Gymnastics(
-      guid: _getUuidFromHash(gymnastics.value.hashCode.toString()),
-      exercise: gymnastics.value.exercise,
-      isPyramid: gymnastics.value.isPyramid,
-      enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
-      restTime: gymnastics.value.restTime,
-      comment: gymnastics.value.comment,
-    );
-  }
+  void assignGuidToGymnastics() =>
+      gymnastics.value = _currentGymnastics(guid: _getUuidFromHash(gymnastics.value.hashCode.toString()));
 
   void resetToDefaultGymnastics() {
     gymnastics.value = Gymnastics(
+      workoutGuid: '',
       exercise: '',
       isPyramid: false,
       enteredWeightSetsRepeats: MapWSR(mapWsr: {0: WeightSetsRepeats()}),
@@ -94,9 +91,23 @@ class GymnasticsController {
     );
   }
 
-  Gymnastics currentGymnastics({String guid, String exercise, bool value, Duration duration, String comment}) {
+  Gymnastics _currentGymnastics(
+      {String workoutGuid, String guid, String exercise, bool value, Duration duration, String comment}) {
+    print('********************_currentGymnastics: $workoutGuid');
+    if (workoutGuid != null) {
+      return Gymnastics(
+        workoutGuid: workoutGuid,
+        guid: gymnastics.value.guid,
+        exercise: gymnastics.value.exercise,
+        isPyramid: gymnastics.value.isPyramid,
+        enteredWeightSetsRepeats: gymnastics.value.enteredWeightSetsRepeats,
+        restTime: gymnastics.value.restTime,
+        comment: gymnastics.value.comment,
+      );
+    }
     if (guid != null) {
       return Gymnastics(
+        workoutGuid: gymnastics.value.workoutGuid,
         guid: guid,
         exercise: gymnastics.value.exercise,
         isPyramid: gymnastics.value.isPyramid,
@@ -107,6 +118,7 @@ class GymnasticsController {
     }
     if (exercise != null) {
       return Gymnastics(
+        workoutGuid: gymnastics.value.workoutGuid,
         guid: gymnastics.value.guid,
         exercise: exercise,
         isPyramid: gymnastics.value.isPyramid,
@@ -117,6 +129,7 @@ class GymnasticsController {
     }
     if (duration != null) {
       return Gymnastics(
+        workoutGuid: gymnastics.value.workoutGuid,
         guid: gymnastics.value.guid,
         exercise: gymnastics.value.exercise,
         isPyramid: gymnastics.value.isPyramid,
@@ -127,6 +140,7 @@ class GymnasticsController {
     }
     if (comment != null) {
       return Gymnastics(
+        workoutGuid: gymnastics.value.workoutGuid,
         guid: gymnastics.value.guid,
         exercise: gymnastics.value.exercise,
         isPyramid: gymnastics.value.isPyramid,
@@ -136,6 +150,7 @@ class GymnasticsController {
       );
     } else {
       return Gymnastics(
+        workoutGuid: gymnastics.value.workoutGuid,
         guid: gymnastics.value.guid,
         exercise: gymnastics.value.exercise,
         isPyramid: value,
@@ -145,5 +160,4 @@ class GymnasticsController {
       );
     }
   }
-
 }

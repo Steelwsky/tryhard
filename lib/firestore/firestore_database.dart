@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tryhard/models/gymnastics.dart';
-import 'package:tryhard/models/user.dart';
 import 'package:tryhard/models/workout.dart';
 
 class FirestoreDatabase {
@@ -25,15 +24,20 @@ class FirestoreDatabase {
 
  */
 
-  Map<int, WeightSetsRepeats> _mapWSR(Gymnastics gymnastics) {}
+//todo
+//  Map<int, WeightSetsRepeats> _mapWSR(Gymnastics gymnastics) {}
 
-  Future<void> saveGymnastics(Gymnastics gymnastics, User user) async {
+  Future<void> saveGymnastics(Gymnastics gymnastics) async {
     databaseFirestore.collection('gymnastics').document('${gymnastics.guid}').setData(gymnastics.toJson());
     print('saved');
   }
 
   Future<void> saveWorkout(Workout workout) async {
-    databaseFirestore.collection('workouts').document('${workout.guid}').setData(workout.toJson());
+    databaseFirestore.collection('workouts').document(workout.guid).setData(workout.toJson());
+  }
+
+  Future<void> updateExistedWorkout(Workout workout) async {
+    databaseFirestore.collection('workouts').document(workout.guid).updateData(workout.toJson());
   }
 
 //Map toJson(){

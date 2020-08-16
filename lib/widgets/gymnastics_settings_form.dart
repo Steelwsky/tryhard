@@ -7,12 +7,14 @@ import 'package:tryhard/models/gymnastics.dart';
 import 'package:tryhard/style/colors.dart';
 
 class GymnasticsSettingsForm extends StatefulWidget {
-  GymnasticsSettingsForm({
+  GymnasticsSettingsForm(
+    this.workoutGuid, {
     Key key,
     this.gymnastics,
   }) : super(key: key);
 
   final Gymnastics gymnastics;
+  final String workoutGuid;
 
   @override
   _GymnasticsSettingsForm createState() => _GymnasticsSettingsForm();
@@ -95,7 +97,8 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                       maxLength: null,
                       maxLines: null,
                       controller: _commentEditingController,
-                      onChanged: (comment) => gymnasticsController.cacheCommentForGymnastics(comment: comment)),
+                      onChanged: (comment) =>
+                          gymnasticsController.cacheCommentForGymnastics(comment: comment.replaceAll("\\n", "\n"))),
                 ],
               ),
             ),
@@ -128,7 +131,8 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
                     ),
                     onPressed: () {
-                      //todo update gymnastics for calendar page and workout_gymnastics_list!!!!!!!!!!
+                      print('---------------- workoutGuid: ${widget.workoutGuid}');
+                      gymnasticsController.linkWorkoutGuidToGymnastics(widget.workoutGuid);
                       if (widget.gymnastics != null) {
                         print('widget.gymnastics != null, ${widget.gymnastics.comment}');
                         workoutController.overwriteExistedGymnastics(gymnastics: gymnasticsController.gymnastics.value);

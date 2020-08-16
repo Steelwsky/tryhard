@@ -15,8 +15,9 @@ import 'package:tryhard/widgets/gymnastics_settings_form.dart';
 * */
 
 class GymnasticsSettingsPage extends StatelessWidget {
-  GymnasticsSettingsPage({Key key, this.gymnastics}) : super(key: key);
+  GymnasticsSettingsPage({Key key, this.gymnastics, this.workoutGuid}) : super(key: key);
 
+  final String workoutGuid;
   final Gymnastics gymnastics;
 
   @override
@@ -30,7 +31,7 @@ class GymnasticsSettingsPage extends StatelessWidget {
                 maxLines: 1,
               ),
       ),
-      body: GymnasticsSettingsForm(gymnastics: gymnastics),
+      body: GymnasticsSettingsForm(workoutGuid, gymnastics: gymnastics),
     );
   }
 }

@@ -40,16 +40,3 @@ class AllUserWorkouts {
 
   final Map<DateTime, List<Workout>> dayWorkouts;
 }
-
-//Workout copyWith({String copyGuid, DateTime copyTime, String copyComment, List<Gymnastics> copyGymnastics}) {
-//    if (guid != null) {
-//      return Workout(guid: copyGuid, time: time, comment: comment, gymnasticsList: gymnasticsList);
-//    }
-//    if (time != null) {
-//      return Workout(guid: guid, time: copyTime, comment: comment, gymnasticsList: gymnasticsList);
-//    }
-//    if (comment != null) {
-//      return Workout(guid: guid, time: time, comment: copyComment, gymnasticsList: gymnasticsList);
-//    } else
-//      return Workout(guid: guid, time: time, comment: copyComment, gymnasticsList: copyGymnastics);
-//  }

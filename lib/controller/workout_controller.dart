@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tryhard/main.dart';
 import 'package:tryhard/models/gymnastics.dart';
-import 'package:tryhard/models/user.dart';
 import 'package:tryhard/models/workout.dart';
 import 'package:uuid/uuid.dart';
 
@@ -92,7 +91,8 @@ class WorkoutController {
   }
 
   void addGymnasticsToWorkout({Gymnastics gymnastics}) {
-    print('addGymnasticsToWorkout: ${gymnastics.exercise} and ${gymnastics.comment}');
+    print(
+        'addGymnasticsToWorkout: ${gymnastics.exercise} and ${gymnastics.comment} workoutGuid: ${gymnastics.workoutGuid}');
     final _gymnasticsList = workout.value.gymnasticsList;
     _gymnasticsList.add(gymnastics);
     workout.value = Workout(
@@ -105,12 +105,12 @@ class WorkoutController {
     _updateDayWorkouts();
     _sortByTime();
 //    _updateAllUserWorkouts();
-    myDatabase.saveGymnastics(gymnastics, User(uid: 'aw21s2aSa2dxc'));
+    myDatabase.saveGymnastics(gymnastics);
     myDatabase.saveWorkout(workout.value);
   }
 
   void overwriteExistedGymnastics({Gymnastics gymnastics}) {
-    print('overwriteExistedGymnastics. guid: ${gymnastics.guid}');
+    print('overwriteExistedGymnastics. guid: ${gymnastics.guid}, workoutGuid: ${gymnastics.workoutGuid}');
     workout.value = Workout(
         guid: workout.value.guid,
         time: workout.value.time,
@@ -124,6 +124,8 @@ class WorkoutController {
 
     _updateDayWorkouts();
     _sortByTime();
+
+    myDatabase.updateExistedWorkout(workout.value);
 //    _updateAllUserWorkouts();
   }
 

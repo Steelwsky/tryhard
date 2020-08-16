@@ -78,7 +78,10 @@ class _GymnasticsListForWorkoutState extends State<GymnasticsListForWorkout> {
           onPressed: () {
             gymnasticsController.resetToDefaultGymnastics();
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => GymnasticsSettingsPage()),
+              MaterialPageRoute(
+                  builder: (_) => GymnasticsSettingsPage(
+                        workoutGuid: widget.workout.guid,
+                      )),
             );
           }),
     );
@@ -89,7 +92,6 @@ class GymnasticsList extends StatelessWidget {
   const GymnasticsList({
     Key key,
   }) : super(key: key);
-
 
   //todo sort by time of workouts
   @override
@@ -116,7 +118,12 @@ class GymnasticsList extends StatelessWidget {
                         ),
                         onTap: () {
                           Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => GymnasticsSettingsPage(gymnastics: gymnastics)),
+                            MaterialPageRoute(
+                                builder: (_) =>
+                                    GymnasticsSettingsPage(
+                                      gymnastics: gymnastics,
+                                      workoutGuid: currentWorkout.guid,
+                                    )),
                           );
                           print(gymnastics.guid);
                         },

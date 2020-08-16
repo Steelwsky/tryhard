@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tryhard/models/nav_bar_items.dart';
 import 'package:tryhard/pages/calendar_page.dart';
 import 'package:tryhard/pages/profile_page.dart';
-import 'package:tryhard/widgets/gymnastics_settings_form.dart';
 
 //enum Pages {home, add, , calendar }
 
@@ -14,7 +13,7 @@ class MyPageController extends BottomNavBarItems {
   MyPageController();
 
   final List<Widget> pages = [
-    GymnasticsSettingsForm(),
+//    GymnasticsSettingsForm(),
     CalendarScreen(),
     ProfilePage(),
   ];

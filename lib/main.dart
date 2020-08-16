@@ -10,16 +10,17 @@ import 'package:tryhard/style/colors.dart';
 
 import 'controller/gymnastics_controller.dart';
 import 'firestore/firestore_database.dart';
-import 'models/user.dart';
 
-typedef SaveGymnastics = Future<void> Function(Gymnastics gymnastics, User user);
+typedef SaveGymnastics = Future<void> Function(Gymnastics gymnastics);
 typedef SaveWorkout = Future<void> Function(Workout workout);
+typedef UpdateExistedWorkout = Future<void> Function(Workout workout);
 
 abstract class CloudStorage {
-  CloudStorage({this.saveGymnastics, this.saveWorkout});
+  CloudStorage({this.saveGymnastics, this.saveWorkout, this.updateExistedWorkout});
 
   final SaveGymnastics saveGymnastics;
   final SaveWorkout saveWorkout;
+  final UpdateExistedWorkout updateExistedWorkout;
 }
 
 class MyDatabase implements CloudStorage {
@@ -30,6 +31,9 @@ class MyDatabase implements CloudStorage {
 
   @override
   SaveWorkout get saveWorkout => firestoreDatabase.saveWorkout;
+
+  @override
+  UpdateExistedWorkout get updateExistedWorkout => firestoreDatabase.updateExistedWorkout;
 }
 
 void main() {

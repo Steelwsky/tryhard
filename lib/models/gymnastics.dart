@@ -11,44 +11,38 @@ class GymnasticsList {
 }
 
 class Gymnastics {
-  Gymnastics({this.guid, this.exercise, this.isPyramid, this.enteredWeightSetsRepeats, this.restTime, this.comment});
+  Gymnastics(
+      {this.workoutGuid,
+      this.guid,
+      this.exercise,
+      this.isPyramid,
+      this.enteredWeightSetsRepeats,
+      this.restTime,
+      this.comment});
 
+  final String workoutGuid;
   final String guid;
   final String exercise;
   final bool isPyramid;
   final MapWSR enteredWeightSetsRepeats;
-
-//  final Map<int, WeightSetsRepeats> enteredWeightSetsRepeats;
   final Duration restTime;
   final String comment;
 
-//  Gymnastics copyWith({
-//    String guid,
-//    String exercise,
-//    bool isPyramid,
-//    Map<int, WeightSetsRepeats> enteredWeightSetsRepeats,
-//    Duration timeForRest,
-//    String comment,
-//  }) {
-//    return Gymnastics(
-//      exercise: exercise,
-//      isPyramid: isPyramid,
-//      enteredWeightSetsRepeats: enteredWeightSetsRepeats,
-//      timeForRest: timeForRest,
-//      comment: comment,
-//    );
-//  }
-
   Gymnastics.fromJson(Map<String, dynamic> json)
-      : guid = json['name'],
+      : workoutGuid = json['workoutGuid'],
+        guid = json['name'],
         exercise = json['email'],
         isPyramid = json['isPyramid'],
         enteredWeightSetsRepeats = json['enteredWSR'],
         restTime = json['restTime'],
         comment = json['comment'];
 
+  //.replaceAll("\\n", "\n") for comment and exercise
+
+  //TODO save new lines \n to firestore
   Map<String, dynamic> toJson() {
     return {
+      'workoutGuid': workoutGuid,
       'guid': guid,
       'exercise': exercise,
       'isPyramid': isPyramid,

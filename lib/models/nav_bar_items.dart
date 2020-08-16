@@ -14,11 +14,11 @@ class BottomNavBarItems {
 
   BottomNavBarItems() {
     _tabs = [
-      BottomNavBarItemModel(
-          name: 'Add',
-          icon: Icon(
-            Icons.add,
-          )),
+//      BottomNavBarItemModel(
+//          name: 'Add',
+//          icon: Icon(
+//            Icons.add,
+//          )),
       BottomNavBarItemModel(
           name: 'Calendar',
           icon: Icon(
