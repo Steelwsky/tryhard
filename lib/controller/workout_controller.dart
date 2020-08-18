@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:tryhard/main.dart';
+import 'package:tryhard/firestore/cloud_storage.dart';
 import 'package:tryhard/models/gymnastics.dart';
 import 'package:tryhard/models/workout.dart';
 import 'package:uuid/uuid.dart';
 
 
 class WorkoutController {
-  WorkoutController({this.myDatabase});
+  WorkoutController({this.myDatabase}) {
+    print('workoutController');
+  }
 
   ValueNotifier<AllUserWorkouts> allUserWorkouts = ValueNotifier(AllUserWorkouts(dayWorkouts: {}));
 
@@ -109,7 +111,7 @@ class WorkoutController {
     myDatabase.saveWorkout(workout.value);
   }
 
-  void overwriteExistedGymnastics({Gymnastics gymnastics}) {
+  void updateExistedWorkoutByGymnastics({Gymnastics gymnastics}) {
     print('overwriteExistedGymnastics. guid: ${gymnastics.guid}, workoutGuid: ${gymnastics.workoutGuid}');
     workout.value = Workout(
         guid: workout.value.guid,
@@ -145,6 +147,8 @@ class WorkoutController {
       }
       return e;
     }).toList();
+
+    //todo save workouts list for map
   }
 
   //TODO

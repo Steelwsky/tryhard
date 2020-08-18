@@ -135,7 +135,8 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                       gymnasticsController.linkWorkoutGuidToGymnastics(widget.workoutGuid);
                       if (widget.gymnastics != null) {
                         print('widget.gymnastics != null, ${widget.gymnastics.comment}');
-                        workoutController.overwriteExistedGymnastics(gymnastics: gymnasticsController.gymnastics.value);
+                        workoutController.updateExistedWorkoutByGymnastics(
+                            gymnastics: gymnasticsController.gymnastics.value);
                       } else {
                         print('widget.gymnastics == null');
                         gymnasticsController.assignGuidToGymnastics();

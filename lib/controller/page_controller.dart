@@ -10,7 +10,9 @@ const int INITIAL_PAGE = 1;
 class MyPageController extends BottomNavBarItems {
   ValueNotifier<int> pageStateNotifier = ValueNotifier(INITIAL_PAGE);
 
-  MyPageController();
+  MyPageController() {
+    print('pageController');
+  }
 
   final List<Widget> pages = [
 //    GymnasticsSettingsForm(),

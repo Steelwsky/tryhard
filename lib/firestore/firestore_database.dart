@@ -21,11 +21,17 @@ class FirestoreDatabase {
         4. Workout (guid, comment, guidGymnastics)
         5. Gymnastics(guid, exercise, isPyramid, Map<int, WSR>, comment)
         6.
-
  */
 
-//todo
-//  Map<int, WeightSetsRepeats> _mapWSR(Gymnastics gymnastics) {}
+  Future<void> saveNotExistedUser(String guid) async {
+    final bool userExists = (await databaseFirestore.collection('users').document(guid).get()).exists;
+
+    if (!userExists) {
+      databaseFirestore.collection('users').document(guid).setData({'guid': guid});
+      print('user is saved');
+    } else
+      print('already saved');
+  }
 
   Future<void> saveGymnastics(Gymnastics gymnastics) async {
     databaseFirestore.collection('gymnastics').document('${gymnastics.guid}').setData(gymnastics.toJson());
@@ -36,8 +42,19 @@ class FirestoreDatabase {
     databaseFirestore.collection('workouts').document(workout.guid).setData(workout.toJson());
   }
 
+  //TODO bad function!
   Future<void> updateExistedWorkout(Workout workout) async {
     databaseFirestore.collection('workouts').document(workout.guid).updateData(workout.toJson());
+  }
+
+  Future<List<String>> retrieveUser() async {
+    final Iterable<String> myBool = await databaseFirestore
+        .collection('historyItems')
+        .getDocuments()
+        .then((onValue) => onValue.documents)
+        .then((document) => document.map((d) => d.data['id']));
+    print(myBool.toList());
+    return myBool.toList();
   }
 
 //Map toJson(){

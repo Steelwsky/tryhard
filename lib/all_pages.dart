@@ -8,11 +8,8 @@ import 'widgets/custom_bottom_nav_bar.dart';
 class AllPages extends StatelessWidget {
 //  GoogleSignIn _googleSignIn; //todo create drawer and use it there. mb for logout function
 
-  AllPages(User user
-//    GoogleSignIn signIn,
-      ) {
+  AllPages(User user) {
     final User _user = user;
-//    _googleSignIn = signIn;
     print('**************************${_user.uid}');
   }
 
