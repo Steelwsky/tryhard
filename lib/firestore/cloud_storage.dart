@@ -5,8 +5,6 @@ import 'package:tryhard/models/workout.dart';
 
 import 'firestore_database.dart';
 
-typedef SaveAllUserWorkouts = Future<void> Function({@required AllUserWorkouts allUserWorkouts});
-
 typedef SaveGymnastics = Future<void> Function({@required Gymnastics gymnastics, @required String userGuid});
 
 typedef SaveWorkout = Future<void> Function({@required Workout workout, @required String userGuid});
@@ -20,13 +18,11 @@ abstract class CloudStorage {
     @required this.saveGymnastics,
     @required this.saveWorkout,
     @required this.saveUser,
-    @required this.saveAllUserWorkouts,
   });
 
   final SaveGymnastics saveGymnastics;
   final SaveWorkout saveWorkout;
   final SaveUser saveUser;
-  final SaveAllUserWorkouts saveAllUserWorkouts;
 }
 
 class MyDatabase implements CloudStorage {
@@ -40,7 +36,4 @@ class MyDatabase implements CloudStorage {
 
   @override
   SaveUser get saveUser => firestoreDatabase.saveNotExistedUser;
-
-  @override
-  SaveAllUserWorkouts get saveAllUserWorkouts => firestoreDatabase.saveAllUserWorkouts;
 }

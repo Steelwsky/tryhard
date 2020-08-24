@@ -72,7 +72,7 @@ class WorkoutController {
 
 // creating new empty workout day and insert in in allUserWorkouts
   void _addWorkoutToADay() {
-    _updateAllUserWorkouts();
+    _updateLocalAllUserWorkouts();
   }
 
   void saveTimeWorkoutBegins(DateTime time) {
@@ -85,8 +85,8 @@ class WorkoutController {
         gymnasticsList: workout.value.gymnasticsList);
     print('saveTimeWorkoutBegins: ${workout.value.time}, ${workout.value.guid}');
 
-    _updateDayWorkouts();
-    _updateAllUserWorkouts();
+    _updateLocalDayWorkouts();
+    _updateLocalAllUserWorkouts();
   }
 
   void saveComment({String comment}) {
@@ -97,14 +97,13 @@ class WorkoutController {
         gymnasticsList: workout.value.gymnasticsList);
     print('comment: ${workout.value.comment}');
 
-    _updateDayWorkouts();
-    _updateAllUserWorkouts();
+    _updateLocalDayWorkouts();
+    _updateLocalAllUserWorkouts();
   }
 
   void addGymnasticsToWorkout({Gymnastics gymnastics}) async {
     print(
-        'addGymnasticsToWorkout: ${gymnastics.exercise} and ${gymnastics.comment} workoutGuid: ${gymnastics
-            .workoutGuid}');
+        'addGymnasticsToWorkout: ${gymnastics.exercise} and ${gymnastics.comment} workoutGuid: ${gymnastics.workoutGuid}');
     final _gymnasticsList = workout.value.gymnasticsList;
     _gymnasticsList.add(gymnastics);
     workout.value = Workout(
@@ -114,10 +113,10 @@ class WorkoutController {
         gymnasticsList: _gymnasticsList);
     print(workout.value.gymnasticsList);
 
-    _updateDayWorkouts();
+    _updateLocalDayWorkouts();
+    _updateLocalAllUserWorkouts();
     _sortByTime();
-//    _updateAllUserWorkouts();
-    _updateAllUserWorkouts();
+
     await myDatabase.saveGymnastics(gymnastics: gymnastics, userGuid: allUserWorkouts.value.userGuid);
     await myDatabase.saveWorkout(workout: workout.value, userGuid: allUserWorkouts.value.userGuid);
   }
@@ -135,13 +134,14 @@ class WorkoutController {
         }).toList());
     print('overwriteExistedGymnastics. date: ${workout.value.time}');
 
-    _updateDayWorkouts();
+    _updateLocalDayWorkouts();
     _sortByTime();
 
-//    _saveAllUserWorkoutsToFirestore();
+    await myDatabase.saveGymnastics(gymnastics: gymnastics, userGuid: allUserWorkouts.value.userGuid);
+    await myDatabase.saveWorkout(workout: workout.value, userGuid: allUserWorkouts.value.userGuid);
   }
 
-  void _updateAllUserWorkouts() {
+  void _updateLocalAllUserWorkouts() {
     final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
     _mapDaysWorkouts[_getDateFromWorkout(workout.value.time)] = dayWorkouts.value;
     allUserWorkouts.value = AllUserWorkouts(
@@ -149,11 +149,9 @@ class WorkoutController {
       userGuid: allUserWorkouts.value.userGuid,
       dayWorkouts: _mapDaysWorkouts,
     );
-
-//    _saveAllUserWorkoutsToFirestore();
   }
 
-  void _updateDayWorkouts() {
+  void _updateLocalDayWorkouts() {
     dayWorkouts.value = dayWorkouts.value.map((e) {
       if (e.guid == workout.value.guid) {
         return e = workout.value;
@@ -164,9 +162,6 @@ class WorkoutController {
     //todo save workouts list for map
   }
 
-//  Future<void> _saveAllUserWorkoutsToFirestore() async {
-//    await myDatabase.saveAllUserWorkouts(allUserWorkouts: allUserWorkouts.value);
-//  }
 
   //TODO
   void _sortByTime() {}
