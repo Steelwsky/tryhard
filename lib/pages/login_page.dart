@@ -100,15 +100,15 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
         phoneNumber: firebaseUser.phoneNumber,
         photo: firebaseUser.photoUrl);
 
-    userController.setUserValueNotifier(user);
-    userController.saveNotExistedUserGuid(user.uid);
+    userController.setUserValueNotifier(user: user);
+    userController.saveNotExistedUserGuid(user: user);
     //////
     var userSignedIn = await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) =>
-              //dMEe4zNXInesHhEJLmxhJy0fb1n1
-              SuccessSignInPage(user)),
+          //dMEe4zNXInesHhEJLmxhJy0fb1n1
+          SuccessSignInPage()),
     );
 
     setState(() {

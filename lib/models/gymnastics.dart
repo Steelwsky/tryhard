@@ -1,14 +1,5 @@
 //enum Exercises { hands, body, legs }
 
-class GymnasticsList {
-  GymnasticsList({this.gymnasticsList});
-
-  final List<Gymnastics> gymnasticsList;
-
-  GymnasticsList copyWith({List<Gymnastics> gymnasticsList}) {
-    return GymnasticsList(gymnasticsList: gymnasticsList);
-  }
-}
 
 class Gymnastics {
   Gymnastics(
@@ -48,7 +39,7 @@ class Gymnastics {
       'isPyramid': isPyramid,
       'enteredWSR': enteredWeightSetsRepeats.toJson(),
       'restTime': restTime.toString(),
-      'comment': comment
+      'comment': comment,
     };
   }
 }

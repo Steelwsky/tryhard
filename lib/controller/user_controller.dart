@@ -7,37 +7,21 @@ import 'package:tryhard/models/user.dart';
 
 
 class UserController {
-  UserController({this.myDatabase, this.user}) {
+  UserController({this.saveUser, this.user}) {
     print('userController');
   }
 
-  final CloudStorage myDatabase;
+  final SaveUser saveUser;
   final User user;
 
   ValueNotifier<User> userNotifier = ValueNotifier(User());
 
-//  void setUserFromGoogle({
-//    String uid,
-//    String displayName,
-//    String email,
-//    String photoUrl,
-//    String phoneNumber,
-//  }) {
-//    userNotifier.value = User(
-//      uid: uid,
-//      firstName: displayName,
-//      email: email,
-//      photo: photoUrl,
-//      phoneNumber: phoneNumber,
-//    );
-//  }
-
-  void saveNotExistedUserGuid(String uid) {
-    myDatabase.saveUser(uid);
+  void saveNotExistedUserGuid({@required User user}) {
+    saveUser(user: user);
   }
 
   //todo mb valueNotifier is too OP, but user data can be used in drawer
-  void setUserValueNotifier(User user) {
+  void setUserValueNotifier({@required User user}) {
     userNotifier.value = user;
   }
 }

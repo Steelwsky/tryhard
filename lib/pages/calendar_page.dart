@@ -127,10 +127,9 @@ class AddWorkout extends StatelessWidget {
               ),
             ),
             onPressed: () {
-              workoutController.createAndAddNewWorkoutToCalendar(workoutDate);
+              workoutController.createNewWorkoutToCalendar(workoutDate);
               Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      GymnasticsListForWorkout(
+                  builder: (context) => GymnasticsListForWorkout(
                         workout: workoutController.workout.value,
                       )));
             },

@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:tryhard/firestore/cloud_storage.dart';
 import 'package:tryhard/models/gymnastics.dart';
+import 'package:tryhard/models/user.dart';
 import 'package:tryhard/models/workout.dart';
 import 'package:uuid/uuid.dart';
-
 
 class WorkoutController {
   WorkoutController({this.myDatabase}) {
     print('workoutController');
   }
 
-  ValueNotifier<AllUserWorkouts> allUserWorkouts = ValueNotifier(AllUserWorkouts(dayWorkouts: {}));
+  ValueNotifier<AllUserWorkouts> allUserWorkouts =
+      ValueNotifier(AllUserWorkouts(guid: '', userGuid: '', dayWorkouts: {}));
 
-  ValueNotifier<List<Workout>> dayWorkouts = ValueNotifier([]); //TODO USE IT
+  ValueNotifier<List<Workout>> dayWorkouts = ValueNotifier([]);
 
   ValueNotifier<Workout> workout = ValueNotifier(Workout(time: null, gymnasticsList: []));
 
   final CloudStorage myDatabase;
 
-  String _getUuidFromHash() => Uuid().v4();
+  String _createNewUuid() => Uuid().v4();
+
+  void linkUserToWorkouts(User user) {
+    allUserWorkouts.value = AllUserWorkouts(
+      guid: allUserWorkouts.value.guid,
+      userGuid: user.uid,
+      dayWorkouts: allUserWorkouts.value.dayWorkouts,
+    );
+  }
 
   DateTime _getDateFromWorkout(DateTime dt) {
     print('dt: ${DateTime(dt.year, dt.month, dt.day)}');
@@ -46,7 +55,7 @@ class WorkoutController {
   void createWorkout({DateTime dateTime}) {
     print('create: $dateTime');
     workout.value = Workout(
-      guid: _getUuidFromHash(),
+      guid: _createNewUuid(),
       time: DateTime(dateTime.year, dateTime.month, dateTime.day, 9, 0),
       comment: '',
       gymnasticsList: [],
@@ -56,13 +65,13 @@ class WorkoutController {
     dayWorkouts.value.add(workout.value);
   }
 
-  void createAndAddNewWorkoutToCalendar(DateTime date) {
+  void createNewWorkoutToCalendar(DateTime date) {
     createWorkout(dateTime: date);
-    _addWorkoutToADay(date);
+    _addWorkoutToADay();
   }
 
 // creating new empty workout day and insert in in allUserWorkouts
-  void _addWorkoutToADay(DateTime date) {
+  void _addWorkoutToADay() {
     _updateAllUserWorkouts();
   }
 
@@ -92,9 +101,10 @@ class WorkoutController {
     _updateAllUserWorkouts();
   }
 
-  void addGymnasticsToWorkout({Gymnastics gymnastics}) {
+  void addGymnasticsToWorkout({Gymnastics gymnastics}) async {
     print(
-        'addGymnasticsToWorkout: ${gymnastics.exercise} and ${gymnastics.comment} workoutGuid: ${gymnastics.workoutGuid}');
+        'addGymnasticsToWorkout: ${gymnastics.exercise} and ${gymnastics.comment} workoutGuid: ${gymnastics
+            .workoutGuid}');
     final _gymnasticsList = workout.value.gymnasticsList;
     _gymnasticsList.add(gymnastics);
     workout.value = Workout(
@@ -107,11 +117,12 @@ class WorkoutController {
     _updateDayWorkouts();
     _sortByTime();
 //    _updateAllUserWorkouts();
-    myDatabase.saveGymnastics(gymnastics);
-    myDatabase.saveWorkout(workout.value);
+    _updateAllUserWorkouts();
+    await myDatabase.saveGymnastics(gymnastics: gymnastics, userGuid: allUserWorkouts.value.userGuid);
+    await myDatabase.saveWorkout(workout: workout.value, userGuid: allUserWorkouts.value.userGuid);
   }
 
-  void updateExistedWorkoutByGymnastics({Gymnastics gymnastics}) {
+  void updateExistedWorkoutByGymnastics({Gymnastics gymnastics}) async {
     print('overwriteExistedGymnastics. guid: ${gymnastics.guid}, workoutGuid: ${gymnastics.workoutGuid}');
     workout.value = Workout(
         guid: workout.value.guid,
@@ -127,17 +138,19 @@ class WorkoutController {
     _updateDayWorkouts();
     _sortByTime();
 
-    myDatabase.updateExistedWorkout(workout.value);
-//    _updateAllUserWorkouts();
+//    _saveAllUserWorkoutsToFirestore();
   }
 
-  //todo here i need to save to firestore
   void _updateAllUserWorkouts() {
     final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
     _mapDaysWorkouts[_getDateFromWorkout(workout.value.time)] = dayWorkouts.value;
-    allUserWorkouts.value = AllUserWorkouts(dayWorkouts: _mapDaysWorkouts);
+    allUserWorkouts.value = AllUserWorkouts(
+      guid: _createNewUuid(),
+      userGuid: allUserWorkouts.value.userGuid,
+      dayWorkouts: _mapDaysWorkouts,
+    );
 
-//    myDatabase.saveAllUserWorkouts(allUserWorkouts.value, User(uid: 'aw21s2aSa2dxc'));
+//    _saveAllUserWorkoutsToFirestore();
   }
 
   void _updateDayWorkouts() {
@@ -150,6 +163,10 @@ class WorkoutController {
 
     //todo save workouts list for map
   }
+
+//  Future<void> _saveAllUserWorkoutsToFirestore() async {
+//    await myDatabase.saveAllUserWorkouts(allUserWorkouts: allUserWorkouts.value);
+//  }
 
   //TODO
   void _sortByTime() {}

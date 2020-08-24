@@ -1,20 +1,32 @@
+import 'package:flutter/cupertino.dart';
 import 'package:tryhard/models/gymnastics.dart';
+import 'package:tryhard/models/user.dart';
 import 'package:tryhard/models/workout.dart';
 
 import 'firestore_database.dart';
 
-typedef SaveGymnastics = Future<void> Function(Gymnastics gymnastics);
-typedef SaveWorkout = Future<void> Function(Workout workout);
-typedef UpdateExistedWorkout = Future<void> Function(Workout workout);
-typedef SaveUser = Future<void> Function(String guid);
+typedef SaveAllUserWorkouts = Future<void> Function({@required AllUserWorkouts allUserWorkouts});
+
+typedef SaveGymnastics = Future<void> Function({@required Gymnastics gymnastics, @required String userGuid});
+
+typedef SaveWorkout = Future<void> Function({@required Workout workout, @required String userGuid});
+
+typedef SaveUser = Future<void> Function({@required User user});
+
+typedef SaveUserAgain = Future<void> Function({@required String guid});
 
 abstract class CloudStorage {
-  CloudStorage({this.saveGymnastics, this.saveWorkout, this.updateExistedWorkout, this.saveUser});
+  CloudStorage({
+    @required this.saveGymnastics,
+    @required this.saveWorkout,
+    @required this.saveUser,
+    @required this.saveAllUserWorkouts,
+  });
 
   final SaveGymnastics saveGymnastics;
   final SaveWorkout saveWorkout;
-  final UpdateExistedWorkout updateExistedWorkout;
   final SaveUser saveUser;
+  final SaveAllUserWorkouts saveAllUserWorkouts;
 }
 
 class MyDatabase implements CloudStorage {
@@ -27,8 +39,8 @@ class MyDatabase implements CloudStorage {
   SaveWorkout get saveWorkout => firestoreDatabase.saveWorkout;
 
   @override
-  UpdateExistedWorkout get updateExistedWorkout => firestoreDatabase.updateExistedWorkout;
+  SaveUser get saveUser => firestoreDatabase.saveNotExistedUser;
 
   @override
-  SaveUser get saveUser => firestoreDatabase.saveNotExistedUser;
+  SaveAllUserWorkouts get saveAllUserWorkouts => firestoreDatabase.saveAllUserWorkouts;
 }

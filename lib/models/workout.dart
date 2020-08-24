@@ -18,11 +18,11 @@ class Workout {
 //  }
 //
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['guid'] = this.guid;
     data['time'] = this.time;
     data['comment'] = this.comment;
-    data['gymnasticsList'] = _getGymnasticsJson();
+//    data['gymnasticsList'] = [];
     return data;
   }
 
@@ -36,7 +36,56 @@ class Workout {
 }
 
 class AllUserWorkouts {
-  AllUserWorkouts({@required this.dayWorkouts});
+  AllUserWorkouts({this.guid, @required this.userGuid, @required this.dayWorkouts});
 
+  final String guid; //todo implement
+  final String userGuid;
   final Map<DateTime, List<Workout>> dayWorkouts;
+
+  //// seems useless
+  Map<String, dynamic> toJson() {
+    print('guid: $guid, userGuid: $userGuid');
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['guid'] = guid;
+    data['userGuid'] = userGuid;
+    data['userWorkouts'] = _getDayWorkouts();
+    return data;
+  }
+
+  List<Map<String, dynamic>> _getDayWorkouts() {
+    final List<Map<String, dynamic>> _list = [];
+
+    final Map<String, dynamic> jsonDayWorkouts = {};
+    dayWorkouts.forEach((key, value) {
+      jsonDayWorkouts['$key'] = _getWorkoutsGuid(key.toString());
+      _list.add(jsonDayWorkouts);
+    });
+    return _list;
+  }
+
+  List<String> _getWorkoutsGuid(String key) {
+    List<String> _list = [];
+    if (dayWorkouts.containsKey(key)) {
+      print('containsKey');
+      dayWorkouts[key].forEach((element) {
+        _list.add(element.guid);
+      });
+    } else {
+      print('foooo');
+    }
+    return _list;
+  }
+
+//  Map<String, dynamic> _getDayWorkouts() {
+//    Map<String, dynamic> _dayWorkouts = {};
+//    List<Map<String, dynamic>> _list = [];
+//    dayWorkouts.forEach((key, value) {
+//      value.forEach((element) {
+//        _list.add(element.toJson());
+//      });
+//      _dayWorkouts['$key'] = _list;
+//    });
+//    return _dayWorkouts;
+//  }
+
 }
