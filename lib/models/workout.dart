@@ -24,14 +24,6 @@ class Workout {
     data['comment'] = this.comment;
     return data;
   }
-
-//  List<Map<String, dynamic>> _getGymnasticsToJson() {
-//    List<Map<String, dynamic>> _list = [];
-//    gymnasticsList.forEach((element) {
-//      _list.add(element.toJson());
-//    });
-//    return _list;
-//  }
 }
 
 class AllUserWorkouts {

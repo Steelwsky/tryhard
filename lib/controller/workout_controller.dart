@@ -27,16 +27,16 @@ class WorkoutController {
       userGuid: user.uid,
       dayWorkouts: allUserWorkouts.value.dayWorkouts,
     );
-    loadAndSerializeData(userGuid: user.uid);
+    loadAndDeserializeData(userGuid: user.uid);
   }
 
-  DateTime _getDateFromWorkout(DateTime dt) {
+  DateTime _getOnlyDate(DateTime dt) {
     print('dt: ${DateTime(dt.year, dt.month, dt.day)}');
     return DateTime(dt.year, dt.month, dt.day);
   }
 
   void changeDayWorkoutList(DateTime day) {
-    dayWorkouts.value = allUserWorkouts.value.dayWorkouts[_getDateFromWorkout(day)];
+    dayWorkouts.value = allUserWorkouts.value.dayWorkouts[_getOnlyDate(day)];
     if (dayWorkouts.value == null) {
       dayWorkouts.value = [];
     }
@@ -144,7 +144,7 @@ class WorkoutController {
 
   void _updateLocalAllUserWorkouts() {
     final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
-    _mapDaysWorkouts[_getDateFromWorkout(workout.value.time)] = dayWorkouts.value;
+    _mapDaysWorkouts[_getOnlyDate(workout.value.time)] = dayWorkouts.value;
     allUserWorkouts.value = AllUserWorkouts(
 //      guid: _createNewUuid(),
       userGuid: allUserWorkouts.value.userGuid,
@@ -161,11 +161,45 @@ class WorkoutController {
     }).toList();
   }
 
-  Future<void> loadAndSerializeData({String userGuid}) async {
+  Future<void> loadAndDeserializeData({@required String userGuid}) async {
     print('loadAndSerializeData, userGuid: $userGuid');
-    final heh = await myDatabase.loadUserWorkouts(userGuid: userGuid);
-    print(heh);
+    final allWorkouts = await myDatabase.loadUserWorkouts(userGuid: userGuid);
+    print(allWorkouts.first.time);
+
+    _mappingAllWorkouts(originalList: allWorkouts);
   }
+
+  void _mappingAllWorkouts({@required List<Workout> originalList}) {
+    List<DateTime> _dateWorkoutsList = [];
+    originalList.forEach((element) => _dateWorkoutsList.add(_getOnlyDate(element.time)));
+    _dateWorkoutsList = [
+      ...{..._dateWorkoutsList}
+    ];
+
+    Map<DateTime, List<Workout>> _map = {
+      for (var v in _dateWorkoutsList) v: originalList.where((element) => _getOnlyDate(element.time) == v).toList()
+    };
+
+    print('UNIQUE LIST: $_dateWorkoutsList');
+    _map.forEach((key, value) {
+      print('map $key : ${_map[key]}');
+    });
+//    _map.keys.toList().addAll(_dateWorkoutsList);
+
+//    originalList.forEach((workout) {
+//      if(_getOnlyDate(workout.time)) {
+//        _map[]
+//      }
+//    });
+  }
+
+//  DateTime _getOnlyDate(DateTime dateTime) {
+//    return DateTime(
+//      dateTime.year,
+//      dateTime.month,
+//      dateTime.day,
+//    );
+//  }
 
   //TODO
   void _sortByTime() {}
