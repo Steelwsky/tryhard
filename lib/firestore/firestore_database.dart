@@ -101,7 +101,6 @@ class FirestoreDatabase {
         .setData(gymnastics.toJson());
   }
 
-  //TODO bad function!
   Future<void> _updateExistedWorkout({
     @required Workout workout,
     @required String userGuid,
@@ -142,4 +141,85 @@ class FirestoreDatabase {
     }
     return isExists;
   }
+
+  Future<List<Workout>> loadUserWorkouts({@required String userGuid}) async {
+    // DocumentReference documentReference = Firestore.instance.collection('users').document(userGuid);
+    print('loadUserWorkouts: $userGuid');
+    List<Workout> list = [];
+    list = await databaseFirestore
+        .collection('users')
+        .document(userGuid)
+        .collection('workouts')
+        .getDocuments()
+        .then((snapshot) => snapshot.documents
+            .map((e) => Workout.fromJson(
+                  json: e.data,
+                  gymnasticsList: e.reference.collection('gymnastics').getDocuments().then(
+                        (value) => value.documents.map((e) => Gymnastics.fromJson(e.data)).toList(),
+                      ),
+                ))
+            .toList());
+    print('after loadUserWorkouts');
+    return list;
+  }
+
+//map((e) {
+//              list.add(Workout.fromJson(e.data));
+//            }).toList());
+
+//  Future<AllUserWorkouts> loadUserWorkouts({@required String userGuid}) async {
+//    DocumentReference documentReference = Firestore.instance.collection('users').document(userGuid);
+//    print('loadUserWorkouts: $userGuid');
+//    Future<AllUserWorkouts> allUserWorkouts = Future.value(AllUserWorkouts(userGuid: '', dayWorkouts: null));
+//    List<String> list = [];
+////    final Map<DateTime, List<Workout>> map = {};
+//    list = await databaseFirestore
+//        .collection('users')
+//        .document(userGuid)
+//        .collection('workouts')
+//        .getDocuments()
+//        .then((snapshot) => snapshot.documents.map((e) {
+//      AllUserWorkouts(userGuid: d., dayWorkouts: null)
+//    });
+//        print('after loadUserWorkouts');
+//    print(list);
+//    return allUserWorkouts;
+//  }
 }
+
+// Future<Map<String, int>> receivingParentsAndChildrenAmount() async {
+//    var listOfParentsAndChildren = await retrieveParentsIds();
+//    int amount;
+//    Map<String, int> myMap = {};
+//    for (var n in listOfParentsAndChildren) {
+//      await databaseFirestore.collection('children').where('parentId', isEqualTo: n).getDocuments().then((event) {
+//        amount = event.documents.length;
+//        print(event.documents.length);
+//        myMap[n] = amount;
+//      });
+//    }
+//    return myMap;
+//  }
+
+// Future<List<String>> retrieveParentsIds() async {
+//    final Iterable<String> myParentsList = await databaseFirestore
+//        .collection('savedStaff')
+//        .getDocuments()
+//        .then((onValue) => onValue.documents)
+//        .then((document) => document.map((d) => d.data['id']));
+//    print(myParentsList.toList());
+//    return myParentsList.toList();
+//  }
+
+// Stream<List<ChildModel>> getParentsChildren(String parentId) {
+//    return databaseFirestore.collection('children').where('parentId', isEqualTo: parentId).snapshots().map((convert) =>
+//        convert.documents
+//            .map((item) => ChildModel(
+//                id: item.data['id'],
+//                parentId: item.data['parentId'],
+//                lastName: item.data['lastName'],
+//                firstName: item.data['firstName'],
+//                middleName: item.data['middleName'],
+//                birthDay: item.data['birthDay']))
+//            .toList());
+//  }

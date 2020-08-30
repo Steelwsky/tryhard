@@ -1,15 +1,13 @@
 //enum Exercises { hands, body, legs }
 
-
 class Gymnastics {
-  Gymnastics(
-      {this.workoutGuid,
-      this.guid,
-      this.exercise,
-      this.isPyramid,
-      this.enteredWeightSetsRepeats,
-      this.restTime,
-      this.comment});
+  Gymnastics({this.workoutGuid,
+    this.guid,
+    this.exercise,
+    this.isPyramid,
+    this.enteredWeightSetsRepeats,
+    this.restTime,
+    this.comment});
 
   final String workoutGuid;
   final String guid;
@@ -24,9 +22,11 @@ class Gymnastics {
         guid = json['name'],
         exercise = json['email'],
         isPyramid = json['isPyramid'],
-        enteredWeightSetsRepeats = json['enteredWSR'],
-        restTime = json['restTime'],
-        comment = json['comment'];
+        enteredWeightSetsRepeats = MapWSR.fromJson(json['enteredWSR']),
+        restTime = Duration(milliseconds: int.parse(json['restTime'])),
+        comment = json['comment'] {
+    print('restTime: ${json['restTime']}');
+  }
 
   //.replaceAll("\\n", "\n") for comment and exercise
 
@@ -38,9 +38,15 @@ class Gymnastics {
       'exercise': exercise,
       'isPyramid': isPyramid,
       'enteredWSR': enteredWeightSetsRepeats.toJson(),
-      'restTime': restTime.toString(),
+      'restTime': restTime.inMilliseconds.toString(),
       'comment': comment,
     };
+  }
+
+  List<Gymnastics> getListGymnastics(Future<List<Gymnastics>> gymnastics) {
+    final List<Gymnastics> _list = [];
+    gymnastics.then((value) => _list.addAll(value));
+    return _list;
   }
 }
 
@@ -56,14 +62,37 @@ class WeightSetsRepeats {
         'sets': sets,
         'repeats': repeats,
       };
+
+  WeightSetsRepeats.fromJson(Map<String, dynamic> json)
+      : weight = json['weight'],
+        sets = json['sets'],
+        repeats = json['repeats'];
 }
 
 class MapWSR {
   MapWSR({this.mapWsr});
 
-  final Map<int, WeightSetsRepeats> mapWsr;
+  Map<int, WeightSetsRepeats> mapWsr;
 
   List<dynamic> toJson() => getValueWSR();
+
+  MapWSR.fromJson(List<dynamic> json)
+      : mapWsr = json.asMap().map((key, value) =>
+      MapEntry<int, WeightSetsRepeats>(
+        key,
+        WeightSetsRepeats.fromJson(value),
+      ));
+
+  //json.map((key, value) => MapEntry<int, WeightSetsRepeats>(int.parse(key), value));
+
+  //MapWSR.fromJson(List<Map<int, WeightSetsRepeats>> json)
+  //      : mapWsr = json.forEach((element) {
+  //          return element.forEach((key, value) {
+  //            WeightSetsRepeats.fromJson(element);
+  //          });
+  //        });
+
+//      : mapWsr = json.asMap().forEach((key, value) => WeightSetsRepeats.fromJson(value));
 
   List<Map<String, dynamic>> getValueWSR() {
     List<Map<String, dynamic>> _wsr = [];

@@ -17,6 +17,7 @@ class _SuccessSignPageState extends State<SuccessSignInPage> {
   Widget build(BuildContext context) {
     final UserController userController = Provider.of<UserController>(context);
     Provider.of<WorkoutController>(context).linkUserToWorkouts(userController.userNotifier.value);
+//    Provider.of<WorkoutController>(context).loadAndSerializeData(userGuid: userController.userNotifier.value.uid);
     return AllPages();
   }
 }

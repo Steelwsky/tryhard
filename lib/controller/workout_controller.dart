@@ -10,8 +10,7 @@ class WorkoutController {
     print('workoutController');
   }
 
-  ValueNotifier<AllUserWorkouts> allUserWorkouts =
-      ValueNotifier(AllUserWorkouts(guid: '', userGuid: '', dayWorkouts: {}));
+  ValueNotifier<AllUserWorkouts> allUserWorkouts = ValueNotifier(AllUserWorkouts(userGuid: '', dayWorkouts: {}));
 
   ValueNotifier<List<Workout>> dayWorkouts = ValueNotifier([]);
 
@@ -21,12 +20,14 @@ class WorkoutController {
 
   String _createNewUuid() => Uuid().v4();
 
-  void linkUserToWorkouts(User user) {
+  void linkUserToWorkouts(User user) async {
+    print('linkUserToWorkouts');
     allUserWorkouts.value = AllUserWorkouts(
-      guid: allUserWorkouts.value.guid,
+//      guid: allUserWorkouts.value.guid,
       userGuid: user.uid,
       dayWorkouts: allUserWorkouts.value.dayWorkouts,
     );
+    loadAndSerializeData(userGuid: user.uid);
   }
 
   DateTime _getDateFromWorkout(DateTime dt) {
@@ -145,7 +146,7 @@ class WorkoutController {
     final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
     _mapDaysWorkouts[_getDateFromWorkout(workout.value.time)] = dayWorkouts.value;
     allUserWorkouts.value = AllUserWorkouts(
-      guid: _createNewUuid(),
+//      guid: _createNewUuid(),
       userGuid: allUserWorkouts.value.userGuid,
       dayWorkouts: _mapDaysWorkouts,
     );
@@ -158,10 +159,13 @@ class WorkoutController {
       }
       return e;
     }).toList();
-
-    //todo save workouts list for map
   }
 
+  Future<void> loadAndSerializeData({String userGuid}) async {
+    print('loadAndSerializeData, userGuid: $userGuid');
+    final heh = await myDatabase.loadUserWorkouts(userGuid: userGuid);
+    print(heh);
+  }
 
   //TODO
   void _sortByTime() {}

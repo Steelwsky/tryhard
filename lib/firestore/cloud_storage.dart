@@ -11,18 +11,20 @@ typedef SaveWorkout = Future<void> Function({@required Workout workout, @require
 
 typedef SaveUser = Future<void> Function({@required User user});
 
-typedef SaveUserAgain = Future<void> Function({@required String guid});
+typedef LoadUserWorkouts = Future<List<Workout>> Function({@required String userGuid});
 
 abstract class CloudStorage {
   CloudStorage({
     @required this.saveGymnastics,
     @required this.saveWorkout,
     @required this.saveUser,
+    @required this.loadUserWorkouts,
   });
 
   final SaveGymnastics saveGymnastics;
   final SaveWorkout saveWorkout;
   final SaveUser saveUser;
+  final LoadUserWorkouts loadUserWorkouts;
 }
 
 class MyDatabase implements CloudStorage {
@@ -36,4 +38,7 @@ class MyDatabase implements CloudStorage {
 
   @override
   SaveUser get saveUser => firestoreDatabase.saveNotExistedUser;
+
+  @override
+  LoadUserWorkouts get loadUserWorkouts => firestoreDatabase.loadUserWorkouts;
 }
