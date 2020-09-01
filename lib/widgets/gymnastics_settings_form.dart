@@ -231,7 +231,7 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
       onPressed: () {
         setState(() {
           gymnasticsController.gymnastics.value.enteredWeightSetsRepeats
-                  .mapWsr[gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length] =
+              .mapWsr[gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length] =
               WeightSetsRepeats();
         });
       },
@@ -341,9 +341,9 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
               flex: 1,
               child: Container(
                   child: Text(
-                'x',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              )),
+                    'x',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  )),
             ),
             VerticalDivider(),
             Flexible(
@@ -370,9 +370,9 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
               flex: 1,
               child: Container(
                   child: Text(
-                'x',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              )),
+                    'x',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  )),
             ),
             VerticalDivider(),
             Flexible(

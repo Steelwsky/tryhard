@@ -89,7 +89,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                             ),
                             subtitle: Row(
                               children: [
-                                for (var item in workout.gymnasticsList) Text('${item.exercise} '),
+                                for (var item in workout.gymnasticsList) Text(' '),
                               ],
                             ),
                             onTap: () {

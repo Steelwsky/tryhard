@@ -97,6 +97,7 @@ class GymnasticsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
+    final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
     return ValueListenableBuilder<Workout>(
         valueListenable: workoutController.workout,
         builder: (_, currentWorkout, __) {
@@ -117,6 +118,7 @@ class GymnasticsList extends StatelessWidget {
                           maxLines: 3,
                         ),
                         onTap: () {
+                          gymnasticsController.setGymnasticsToNotifier(inputGymnastics: gymnastics);
                           Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (_) =>

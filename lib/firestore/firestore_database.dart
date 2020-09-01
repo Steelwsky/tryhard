@@ -142,10 +142,38 @@ class FirestoreDatabase {
     return isExists;
   }
 
+  //TODO Gymnastics is null
   Future<List<Workout>> loadUserWorkouts({@required String userGuid}) async {
     print('loadUserWorkouts: $userGuid');
-    List<Workout> list = [];
-    list = await databaseFirestore
+    List<Workout> _listWorkouts = [];
+    final List<Gymnastics> _listGymnastics = [];
+
+    await databaseFirestore
+        .collection('users')
+        .document(userGuid)
+        .collection('workouts')
+        .getDocuments()
+        .then((snapshot) {
+      snapshot.documents.forEach((e) {
+        e.reference.collection('gymnastics').getDocuments().then((value) => value.documents.forEach((element) {
+              _listGymnastics.add(Gymnastics.fromJson(element.data));
+              // print('--------');
+              // print('GYMNASTICS LENGTH: ${_listGymnastics.length}}');
+
+              // _listGymnastics.forEach((element) {
+              //   print('#####GYMNASTICS: ${element.exercise}, ${element.restTime},');
+              //   element.enteredWeightSetsRepeats.mapWsr.forEach((key, value) {
+              //     print('KEY: $key, VALUE W: ${value.weight}, VALUE S: ${value.sets}, VALUE R: ${value.repeats}');
+              //   });
+              // });
+            }));
+        // _listGymnastics.forEach((element) {
+        //   print('#####GYMNASTICS: ${element.exercise}, ${element.restTime}');
+        // });
+      });
+    });
+
+    _listWorkouts = await databaseFirestore
         .collection('users')
         .document(userGuid)
         .collection('workouts')
@@ -153,12 +181,34 @@ class FirestoreDatabase {
         .then((snapshot) => snapshot.documents
             .map((e) => Workout.fromJson(
                   json: e.data,
-                  gymnasticsList: e.reference.collection('gymnastics').getDocuments().then(
-                        (value) => value.documents.map((e) => Gymnastics.fromJson(e.data)).toList(),
-                      ),
+                  gymnasticsList: _listGymnastics.where((element) => element.workoutGuid == e.data['guid']).toList(),
                 ))
             .toList());
     print('after loadUserWorkouts');
-    return list;
+    return _listWorkouts;
   }
 }
+
+//Future<List<Workout>> loadUserWorkouts({@required String userGuid}) async {
+//    print('loadUserWorkouts: $userGuid');
+//    List<Workout> listWorkouts = [];
+//    listWorkouts = await databaseFirestore
+//        .collection('users')
+//        .document(userGuid)
+//        .collection('workouts')
+//        .getDocuments()
+//        .then((snapshot) => snapshot.documents.map((e) =>
+//              Workout.fromJson(
+//                json: e.data,
+//                gymnasticsList:  e.reference.collection('gymnastics').getDocuments().then(
+//                      (value) => value.documents.map((e) {
+//                        Gymnastics.fromJson(e.data);
+////                        print ('GYMNASTICS DATA VALUES: ${e.data.values.toList()}');
+//                      }).toList(),
+//                    ),
+//              )
+//            ).toList());
+//    print('after loadUserWorkouts');
+//
+//    return listWorkouts;
+//  }

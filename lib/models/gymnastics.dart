@@ -1,5 +1,19 @@
 //enum Exercises { hands, body, legs }
 
+class GymnasticsList {
+  GymnasticsList({this.gymnasticsList});
+
+  final List<Gymnastics> gymnasticsList;
+
+//  List<Gymnastics> getListGymnastics(){
+//    final List<Gymnastics> _list = [];
+//    gymnasticsList.then((value) => _list.addAll(value));
+//    print(_list.length);
+//    return _list;
+//  }
+
+}
+
 class Gymnastics {
   Gymnastics(
       {this.workoutGuid,
@@ -19,17 +33,15 @@ class Gymnastics {
   final String comment;
 
   Gymnastics.fromJson(Map<String, dynamic> json)
-      : workoutGuid = json['workoutGuid'],
-        guid = json['name'],
-        exercise = json['email'],
+      : workoutGuid = json['workoutGuid'] != null ? json['workoutGuid'] : 'N',
+        guid = json['guid'] != null ? json['guid'] : 'N',
+        exercise = json['exercise'] != null ? json['exercise'] : 'N',
         isPyramid = json['isPyramid'],
         enteredWeightSetsRepeats = MapWSR.fromJson(json['enteredWSR']),
         restTime = Duration(milliseconds: int.parse(json['restTime'])),
-        comment = json['comment'];
+        comment = json['comment'] != null ? json['comment'] : 'N';
 
-  //.replaceAll("\\n", "\n") for comment and exercise
 
-  //TODO save new lines \n to firestore
   Map<String, dynamic> toJson() {
     return {
       'workoutGuid': workoutGuid,
@@ -40,12 +52,6 @@ class Gymnastics {
       'restTime': restTime.inMilliseconds.toString(),
       'comment': comment,
     };
-  }
-
-  List<Gymnastics> getListGymnastics(Future<List<Gymnastics>> gymnastics) {
-    final List<Gymnastics> _list = [];
-    gymnastics.then((value) => _list.addAll(value));
-    return _list;
   }
 }
 
@@ -63,9 +69,9 @@ class WeightSetsRepeats {
       };
 
   WeightSetsRepeats.fromJson(Map<String, dynamic> json)
-      : weight = json['weight'],
-        sets = json['sets'],
-        repeats = json['repeats'];
+      : weight = json['weight'] != null ? json['weight'] : '',
+        sets = json['sets'] != null ? json['sets'] : '',
+        repeats = json['repeats'] != null ? json['repeats'] : '';
 }
 
 class MapWSR {

@@ -31,7 +31,7 @@ class WorkoutController {
   }
 
   DateTime _getOnlyDate(DateTime dt) {
-    print('dt: ${DateTime(dt.year, dt.month, dt.day)}');
+//    print('dt: ${DateTime(dt.year, dt.month, dt.day)}');
     return DateTime(dt.year, dt.month, dt.day);
   }
 
@@ -164,7 +164,7 @@ class WorkoutController {
   Future<void> loadAndDeserializeData({@required String userGuid}) async {
     print('loadAndSerializeData, userGuid: $userGuid');
     final allWorkouts = await myDatabase.loadUserWorkouts(userGuid: userGuid);
-    print(allWorkouts.first.time);
+//    print(allWorkouts.first.time);
 
     _mappingAllWorkouts(originalList: allWorkouts);
   }
@@ -180,26 +180,24 @@ class WorkoutController {
       for (var v in _dateWorkoutsList) v: originalList.where((element) => _getOnlyDate(element.time) == v).toList()
     };
 
-    print('UNIQUE LIST: $_dateWorkoutsList');
     _map.forEach((key, value) {
-      print('map $key : ${_map[key]}');
+      _map[key].forEach((element) {
+        printer(element);
+      });
     });
-//    _map.keys.toList().addAll(_dateWorkoutsList);
 
-//    originalList.forEach((workout) {
-//      if(_getOnlyDate(workout.time)) {
-//        _map[]
-//      }
-//    });
+    allUserWorkouts.value = AllUserWorkouts(userGuid: allUserWorkouts.value.userGuid, dayWorkouts: _map);
   }
 
-//  DateTime _getOnlyDate(DateTime dateTime) {
-//    return DateTime(
-//      dateTime.year,
-//      dateTime.month,
-//      dateTime.day,
-//    );
-//  }
+  void printer(Workout workout) {
+    print('printer method, workouts gymnasticsList length: ${workout.gymnasticsList.length}');
+    workout.gymnasticsList.forEach((element) {
+      print('GYMNASTICS::::::${element.guid}, ${element.restTime}, ${element.workoutGuid}, ${element.exercise} ');
+      element.enteredWeightSetsRepeats.mapWsr.forEach((key, value) {
+        print('KEY: $key, VALUE W: ${value.weight}, VALUE S: ${value.sets}, VALUE R: ${value.repeats}');
+      });
+    });
+  }
 
   //TODO
   void _sortByTime() {}

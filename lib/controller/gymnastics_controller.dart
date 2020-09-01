@@ -15,6 +15,9 @@ class GymnasticsController {
 
   String _getUuidFromHash(String hash) => Uuid().v5(hash, 'UUID');
 
+  void assignGuidToGymnastics() =>
+      gymnastics.value = _currentGymnastics(guid: _getUuidFromHash(gymnastics.value.hashCode.toString()));
+
   void linkWorkoutGuidToGymnastics(String workoutGuid) =>
       gymnastics.value = _currentGymnastics(workoutGuid: workoutGuid);
 
@@ -77,9 +80,6 @@ class GymnasticsController {
     print(gymnastics.value.comment);
   }
 
-  void assignGuidToGymnastics() =>
-      gymnastics.value = _currentGymnastics(guid: _getUuidFromHash(gymnastics.value.hashCode.toString()));
-
   void resetToDefaultGymnastics() {
     gymnastics.value = Gymnastics(
       workoutGuid: '',
@@ -89,6 +89,10 @@ class GymnasticsController {
       restTime: Duration(minutes: 0, seconds: 0),
       comment: '',
     );
+  }
+
+  void setGymnasticsToNotifier({@required Gymnastics inputGymnastics}) {
+    gymnastics.value = inputGymnastics;
   }
 
   Gymnastics _currentGymnastics(

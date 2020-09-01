@@ -11,11 +11,11 @@ class Workout {
   final List<Gymnastics> gymnasticsList;
 
 //TODO
-  Workout.fromJson({@required Map<String, dynamic> json, Future<List<Gymnastics>> gymnasticsList})
-      : guid = json['guid'],
-        time = timestampHelper(timestamp: json['time']),
-        comment = json['comment'],
-        gymnasticsList = Gymnastics().getListGymnastics(gymnasticsList);
+  Workout.fromJson({@required Map<String, dynamic> json, List<Gymnastics> gymnasticsList})
+      : guid = json['guid'] != null ? json['guid'] : '',
+        time = json['time'] != null ? timestampHelper(timestamp: json['time']) : '',
+        comment = json['comment'] != null ? json['comment'] : '',
+        gymnasticsList = gymnasticsList != null ? gymnasticsList : null;
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = Map<String, dynamic>();
@@ -23,6 +23,12 @@ class Workout {
     data['time'] = this.time;
     data['comment'] = this.comment;
     return data;
+  }
+
+  List<Gymnastics> getListGymnastics(Future<List<Gymnastics>> gymnastics) {
+    final List<Gymnastics> _list = [];
+    gymnastics.then((value) => _list.addAll(value));
+    return _list;
   }
 }
 
@@ -61,8 +67,6 @@ class AllUserWorkouts {
       dayWorkouts[key].forEach((element) {
         _list.add(element.guid);
       });
-    } else {
-      print('foooo');
     }
     return _list;
   }
