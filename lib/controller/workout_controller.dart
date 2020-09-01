@@ -164,7 +164,6 @@ class WorkoutController {
   Future<void> loadAndDeserializeData({@required String userGuid}) async {
     print('loadAndSerializeData, userGuid: $userGuid');
     final allWorkouts = await myDatabase.loadUserWorkouts(userGuid: userGuid);
-//    print(allWorkouts.first.time);
 
     _mappingAllWorkouts(originalList: allWorkouts);
   }

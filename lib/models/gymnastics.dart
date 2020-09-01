@@ -4,14 +4,6 @@ class GymnasticsList {
   GymnasticsList({this.gymnasticsList});
 
   final List<Gymnastics> gymnasticsList;
-
-//  List<Gymnastics> getListGymnastics(){
-//    final List<Gymnastics> _list = [];
-//    gymnasticsList.then((value) => _list.addAll(value));
-//    print(_list.length);
-//    return _list;
-//  }
-
 }
 
 class Gymnastics {

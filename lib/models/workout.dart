@@ -6,11 +6,10 @@ class Workout {
   Workout({this.guid, @required this.time, this.comment, @required this.gymnasticsList});
 
   final String guid;
-  final DateTime time; // at the end it should the exact time, 10am, 3pm etc
+  final DateTime time;
   final String comment;
   final List<Gymnastics> gymnasticsList;
 
-//TODO
   Workout.fromJson({@required Map<String, dynamic> json, List<Gymnastics> gymnasticsList})
       : guid = json['guid'] != null ? json['guid'] : '',
         time = json['time'] != null ? timestampHelper(timestamp: json['time']) : '',
@@ -71,16 +70,5 @@ class AllUserWorkouts {
     return _list;
   }
 
-//  Map<String, dynamic> _getDayWorkouts() {
-//    Map<String, dynamic> _dayWorkouts = {};
-//    List<Map<String, dynamic>> _list = [];
-//    dayWorkouts.forEach((key, value) {
-//      value.forEach((element) {
-//        _list.add(element.toJson());
-//      });
-//      _dayWorkouts['$key'] = _list;
-//    });
-//    return _dayWorkouts;
-//  }
 
 }
