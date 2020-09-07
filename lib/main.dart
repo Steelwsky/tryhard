@@ -5,6 +5,7 @@ import 'package:tryhard/controller/user_controller.dart';
 import 'package:tryhard/controller/workout_controller.dart';
 import 'package:tryhard/pages/login_page.dart';
 import 'package:tryhard/style/colors.dart';
+import 'package:tryhard/success_signin_page.dart';
 
 import 'controller/gymnastics_controller.dart';
 import 'controller/page_controller.dart';
@@ -41,9 +42,26 @@ class _MyAppState extends State<MyApp> {
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
-              visualDensity: VisualDensity.adaptivePlatformDensity,
-              primaryColor: DARK_PURPLE),
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+            primaryColor: SCAFFOLD_BLACK,
+            accentColor: PURPLE,
+            primaryColorBrightness: Brightness.dark,
+            brightness: Brightness.dark,
+            bottomNavigationBarTheme: BottomNavigationBarThemeData(backgroundColor: NAVBAR_BLACK),
+            scaffoldBackgroundColor: SCAFFOLD_BLACK,
+            // textTheme: TextTheme(),
+            floatingActionButtonTheme:
+                FloatingActionButtonThemeData(foregroundColor: SCAFFOLD_BLACK, backgroundColor: PURPLE),
+            indicatorColor: DARK_PURPLE,
+            buttonTheme: ButtonThemeData(),
+            buttonColor: DARK_PURPLE,
+            // buttonBarTheme: ButtonBarThemeData(),
+            cardColor: BACKGROUND_DARK_GREY,
+          ),
           home: LoginPageWidget(),
+          routes: {
+            "/successSignIn": (_) => SuccessSignInPage(),
+          },
         ));
   }
 }

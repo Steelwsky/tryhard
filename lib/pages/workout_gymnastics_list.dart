@@ -104,31 +104,33 @@ class GymnasticsList extends StatelessWidget {
           return ListView(
               key: PageStorageKey('gymnasticsList'),
               children: currentWorkout.gymnasticsList
-                  .map((gymnastics) => ListTile(
-                        leading: Text(
-                          '${currentWorkout.gymnasticsList.indexOf(gymnastics) + 1}',
-                          style: TextStyle(fontSize: 18),
+                  .map((gymnastics) => Card(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        child: ListTile(
+                          leading: Text(
+                            '${currentWorkout.gymnasticsList.indexOf(gymnastics) + 1}',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          title: Text(
+                            '${gymnastics.exercise}',
+                            maxLines: 3,
+                          ),
+                          subtitle: Text(
+                            gymnastics.comment,
+                            maxLines: 3,
+                          ),
+                          onTap: () {
+                            gymnasticsController.setGymnasticsToNotifier(inputGymnastics: gymnastics);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                  builder: (_) => GymnasticsSettingsPage(
+                                        gymnastics: gymnastics,
+                                        workoutGuid: currentWorkout.guid,
+                                      )),
+                            );
+                            print(gymnastics.guid);
+                          },
                         ),
-                        title: Text(
-                          '${gymnastics.exercise}',
-                          maxLines: 3,
-                        ),
-                        subtitle: Text(
-                          gymnastics.comment,
-                          maxLines: 3,
-                        ),
-                        onTap: () {
-                          gymnasticsController.setGymnasticsToNotifier(inputGymnastics: gymnastics);
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) =>
-                                    GymnasticsSettingsPage(
-                                      gymnastics: gymnastics,
-                                      workoutGuid: currentWorkout.guid,
-                                    )),
-                          );
-                          print(gymnastics.guid);
-                        },
                       ))
                   .toList());
         });

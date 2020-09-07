@@ -5,6 +5,7 @@ import 'package:tryhard/controller/workout_controller.dart';
 import 'package:tryhard/custom_calendar/flutter_clean_calendar.dart';
 import 'package:tryhard/models/workout.dart';
 import 'package:tryhard/pages/workout_gymnastics_list.dart';
+import 'package:tryhard/style/colors.dart';
 
 class CalendarScreen extends StatefulWidget {
   @override
@@ -27,41 +28,44 @@ class _CalendarScreenState extends State<CalendarScreen> {
         valueListenable: workoutController.allUserWorkouts,
         builder: (_, allWorkouts, __) {
           return SafeArea(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                Flexible(
-                  flex: 6,
-                  child: Container(
-                    key: PageStorageKey('calendar'),
-                    child: Calendar(
-                      startOnMonday: true,
-                      weekDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                      events: allWorkouts.dayWorkouts,
-                      onDateSelected: (date) {
-                        setState(() {
-                          _selectedDay = date;
-                        });
-                        workoutController.changeDayWorkoutList(_selectedDay);
-                      },
-                      isExpandable: false,
-                      isExpanded: true,
-                      hideBottomBar: false,
-                      eventDoneColor: Colors.green,
-                      selectedColor: Colors.blue,
-                      todayColor: Colors.blue,
-                      eventColor: Colors.grey,
-                      dayOfWeekStyle: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 13),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: ListView(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                          color: BACKGROUND_DARK_GREY,
+                          // border: Border.all(color: PURPLE),
+                          borderRadius: BorderRadius.all(Radius.circular(20))),
+                      key: PageStorageKey('calendar'),
+                      child: Calendar(
+                        startOnMonday: true,
+                        weekDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                        events: allWorkouts.dayWorkouts,
+                        onDateSelected: (date) {
+                          setState(() {
+                            _selectedDay = date;
+                          });
+                          workoutController.changeDayWorkoutList(day: _selectedDay);
+                        },
+                        isExpandable: false,
+                        isExpanded: true,
+                        hideBottomBar: false,
+                        eventDoneColor: Colors.green,
+                        selectedColor: GREY,
+                        todayColor: PURPLE,
+                        eventColor: Colors.grey,
+                        dayOfWeekStyle:
+                            TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 13),
+                      ),
                     ),
-                  ),
+                    AddWorkout(workoutDate: _selectedDay),
+                    _buildEventList(),
+                  ],
                 ),
-                Flexible(flex: 1, child: AddWorkout(workoutDate: _selectedDay)),
-                Flexible(
-                  flex: 3,
-                  child: _buildEventList(),
-                )
-              ],
+              ),
             ),
           );
         });
@@ -74,32 +78,46 @@ class _CalendarScreenState extends State<CalendarScreen> {
         builder: (_, dayWorkouts, __) {
           return dayWorkouts.length == 0
               ? Container()
-              : ListView(
-                  key: PageStorageKey('gymnasticsList'),
-                  children: dayWorkouts
-                      .map((workout) => ListTile(
-                            leading: Text(
-                              DateFormat('HH:mm').format(workout.time),
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            title: Text(
-                              '${workout.comment}',
-                              maxLines: 3,
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            subtitle: Row(
-                              children: [
-                                for (var item in workout.gymnasticsList) Text(' '),
-                              ],
-                            ),
-                            onTap: () {
-                              workoutController.setWorkout(workout);
-                              Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => GymnasticsListForWorkout(workout: workout)),
-                              );
-                            },
-                          ))
-                      .toList());
+              : ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 50.0),
+            child: ListView(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                key: PageStorageKey('gymnasticsList'),
+                children: dayWorkouts
+                    .map((workout) =>
+                    Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(10))),
+                      child: ListTile(
+                        visualDensity: VisualDensity.compact,
+                        dense: true,
+                        focusColor: Colors.grey,
+                        leading: Text(
+                          DateFormat('HH:mm').format(workout.time),
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        title: Text(
+                          '${workout.comment}',
+                          maxLines: 3,
+                          style: TextStyle(fontSize: 18),
+                        ),
+                        subtitle: Row(
+                          children: [
+                            for (var item in workout.gymnasticsList) Text(' '),
+                          ],
+                        ),
+                        onTap: () {
+                          workoutController.setWorkout(w: workout);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) => GymnasticsListForWorkout(workout: workout)),
+                          );
+                        },
+                      ),
+                    ))
+                    .toList()),
+          );
         });
   }
 }
@@ -113,28 +131,26 @@ class AddWorkout extends StatelessWidget {
   Widget build(BuildContext context) {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
     return Padding(
-      padding: const EdgeInsets.only(top: 4, right: 16),
-      child: Column(
-        children: <Widget>[
-          FlatButton(
-            highlightColor: ThemeData().scaffoldBackgroundColor,
-            splashColor: Colors.white,
-            child: Text(
-              'Add workout',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.blue,
-              ),
+      padding: const EdgeInsets.only(top: 16),
+      child: Container(
+        alignment: AlignmentDirectional.bottomEnd,
+        child: FlatButton(
+          child: Text(
+            'Add workout',
+            style: TextStyle(
+              fontSize: 16,
+              color: BTN_PRIMARY_ACTION,
             ),
-            onPressed: () {
-              workoutController.createNewWorkoutToCalendar(workoutDate);
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => GymnasticsListForWorkout(
-                        workout: workoutController.workout.value,
-                      )));
-            },
           ),
-        ],
+          onPressed: () {
+            workoutController.createNewWorkoutToCalendar(date: workoutDate);
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) =>
+                    GymnasticsListForWorkout(
+                      workout: workoutController.workout.value,
+                    )));
+          },
+        ),
       ),
     );
   }

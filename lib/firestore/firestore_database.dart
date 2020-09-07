@@ -142,7 +142,7 @@ class FirestoreDatabase {
     return isExists;
   }
 
-  //TODO Gymnastics is null
+  //TODO gymnastics in some cases are not downloaded!
   Future<List<Workout>> loadUserWorkouts({@required String userGuid}) async {
     print('loadUserWorkouts: $userGuid');
     List<Workout> _listWorkouts = [];
@@ -169,10 +169,50 @@ class FirestoreDatabase {
         .then((snapshot) => snapshot.documents
             .map((e) => Workout.fromJson(
                   json: e.data,
-                  gymnasticsList: _listGymnastics.where((element) => element.workoutGuid == e.data['guid']).toList(),
+                  gymnasticsList:
+                      _listGymnastics.where((element) => element.workoutGuid == e.data['guid']).toList(),
                 ))
             .toList());
     print('after loadUserWorkouts');
     return _listWorkouts;
   }
 }
+
+// //TODO gymnastics in some cases are not downloaded!
+//   Future<List<Workout>> loadUserWorkouts({@required String userGuid}) async {
+//     print('loadUserWorkouts: $userGuid');
+//     List<Workout> _listWorkouts = [];
+//     final List<Gymnastics> _listGymnastics = [];
+//
+//     await databaseFirestore
+//         .collection('users')
+//         .document(userGuid)
+//         .collection('workouts')
+//         .getDocuments()
+//         .then((snapshot) {
+//       snapshot.documents.forEach((e) {
+//         e.reference
+//             .collection('gymnastics')
+//             .getDocuments()
+//             .then((value) => value.documents.forEach((element) {
+//                   _listGymnastics.add(Gymnastics.fromJson(element.data));
+//                 }));
+//       });
+//     }).then((_) async {
+//       _listWorkouts = await databaseFirestore
+//           .collection('users')
+//           .document(userGuid)
+//           .collection('workouts')
+//           .getDocuments()
+//           .then((snapshot) => snapshot.documents
+//               .map((e) => Workout.fromJson(
+//                     json: e.data,
+//                     gymnasticsList:
+//                         _listGymnastics.where((element) => element.workoutGuid == e.data['guid']).toList(),
+//                   ))
+//               .toList());
+//       print('after loadUserWorkouts');
+//     });
+//
+//     return _listWorkouts;
+//   }

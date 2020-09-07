@@ -7,14 +7,15 @@ import 'package:tryhard/models/user.dart';
 
 
 class UserController {
-  UserController({this.saveUser, this.user}) {
+  UserController({this.saveUser}) {
     print('userController');
   }
 
   final SaveUser saveUser;
-  final User user;
 
-  ValueNotifier<User> userNotifier = ValueNotifier(User());
+  // final User user;
+
+  ValueNotifier<User> userNotifier = ValueNotifier(null);
 
   void saveNotExistedUserGuid({@required User user}) {
     saveUser(user: user);
@@ -22,6 +23,7 @@ class UserController {
 
   //todo mb valueNotifier is too OP, but user data can be used in drawer
   void setUserValueNotifier({@required User user}) {
+    print('setUserValueNotifier call');
     userNotifier.value = user;
   }
 }

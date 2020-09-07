@@ -10,7 +10,11 @@ class WorkoutController {
     print('workoutController');
   }
 
-  ValueNotifier<AllUserWorkouts> allUserWorkouts = ValueNotifier(AllUserWorkouts(userGuid: '', dayWorkouts: {}));
+  ValueNotifier<AllUserWorkouts> allUserWorkouts =
+      ValueNotifier(AllUserWorkouts(userGuid: null, dayWorkouts: null));
+
+  // ValueNotifier<AllUserWorkouts> allUserWorkouts =
+  // ValueNotifier(AllUserWorkouts(userGuid: '', dayWorkouts: {}));
 
   ValueNotifier<List<Workout>> dayWorkouts = ValueNotifier([]);
 
@@ -20,40 +24,30 @@ class WorkoutController {
 
   String _createNewUuid() => Uuid().v4();
 
-  void linkUserToWorkouts(User user) async {
-    print('linkUserToWorkouts');
-    allUserWorkouts.value = AllUserWorkouts(
-//      guid: allUserWorkouts.value.guid,
-      userGuid: user.uid,
-      dayWorkouts: allUserWorkouts.value.dayWorkouts,
-    );
-    loadAndDeserializeData(userGuid: user.uid);
+  // helper. all input data converting to yyyy-mm-dd with time 00:00:00
+  DateTime _getOnlyDate({@required DateTime date}) {
+    return DateTime(date.year, date.month, date.day);
   }
 
-  DateTime _getOnlyDate(DateTime dt) {
-//    print('dt: ${DateTime(dt.year, dt.month, dt.day)}');
-    return DateTime(dt.year, dt.month, dt.day);
-  }
-
-  void changeDayWorkoutList(DateTime day) {
-    dayWorkouts.value = allUserWorkouts.value.dayWorkouts[_getOnlyDate(day)];
+  void changeDayWorkoutList({@required DateTime day}) {
+    dayWorkouts.value = allUserWorkouts.value.dayWorkouts[_getOnlyDate(date: day)];
     if (dayWorkouts.value == null) {
       dayWorkouts.value = [];
     }
     print('day: $day');
   }
 
-  void setWorkout(Workout wo) {
-    print('setWorkout: guid is ${wo.guid}');
+  void setWorkout({@required Workout w}) {
+    print('setWorkout: guid is ${w.guid}');
     workout.value = Workout(
-      guid: wo.guid,
-      time: wo.time,
-      comment: wo.comment,
-      gymnasticsList: wo.gymnasticsList,
+      guid: w.guid,
+      time: w.time,
+      comment: w.comment,
+      gymnasticsList: w.gymnasticsList,
     );
   }
 
-  void createWorkout({DateTime dateTime}) {
+  void _createWorkout({@required DateTime dateTime}) {
     print('create: $dateTime');
     workout.value = Workout(
       guid: _createNewUuid(),
@@ -66,8 +60,8 @@ class WorkoutController {
     dayWorkouts.value.add(workout.value);
   }
 
-  void createNewWorkoutToCalendar(DateTime date) {
-    createWorkout(dateTime: date);
+  void createNewWorkoutToCalendar({@required DateTime date}) {
+    _createWorkout(dateTime: date);
     _addWorkoutToADay();
   }
 
@@ -76,7 +70,7 @@ class WorkoutController {
     _updateLocalAllUserWorkouts();
   }
 
-  void saveTimeWorkoutBegins(DateTime time) {
+  void saveTimeWorkoutBegins({@required DateTime time}) {
     Workout _workout = workout.value;
     print('_workout guid: ${_workout.guid}');
     workout.value = Workout(
@@ -103,8 +97,8 @@ class WorkoutController {
   }
 
   void addGymnasticsToWorkout({Gymnastics gymnastics}) async {
-    print(
-        'addGymnasticsToWorkout: ${gymnastics.exercise} and ${gymnastics.comment} workoutGuid: ${gymnastics.workoutGuid}');
+    print('addGymnasticsToWorkout: ${gymnastics.exercise} and '
+        '${gymnastics.comment} workoutGuid: ${gymnastics.workoutGuid}');
     final _gymnasticsList = workout.value.gymnasticsList;
     _gymnasticsList.add(gymnastics);
     workout.value = Workout(
@@ -123,7 +117,8 @@ class WorkoutController {
   }
 
   void updateExistedWorkoutByGymnastics({Gymnastics gymnastics}) async {
-    print('overwriteExistedGymnastics. guid: ${gymnastics.guid}, workoutGuid: ${gymnastics.workoutGuid}');
+    print('overwriteExistedGymnastics. guid: ${gymnastics.guid}, '
+        'workoutGuid: ${gymnastics.workoutGuid}');
     workout.value = Workout(
         guid: workout.value.guid,
         time: workout.value.time,
@@ -144,7 +139,7 @@ class WorkoutController {
 
   void _updateLocalAllUserWorkouts() {
     final Map<DateTime, List<Workout>> _mapDaysWorkouts = allUserWorkouts.value.dayWorkouts;
-    _mapDaysWorkouts[_getOnlyDate(workout.value.time)] = dayWorkouts.value;
+    _mapDaysWorkouts[_getOnlyDate(date: workout.value.time)] = dayWorkouts.value;
     allUserWorkouts.value = AllUserWorkouts(
 //      guid: _createNewUuid(),
       userGuid: allUserWorkouts.value.userGuid,
@@ -161,37 +156,56 @@ class WorkoutController {
     }).toList();
   }
 
-  Future<void> loadAndDeserializeData({@required String userGuid}) async {
-    print('loadAndSerializeData, userGuid: $userGuid');
-    final allWorkouts = await myDatabase.loadUserWorkouts(userGuid: userGuid);
-
-    _mappingAllWorkouts(originalList: allWorkouts);
+  // after user identified via google, we need to link
+  // that user and download all user's data from firestore.
+  Future<void> downloadUserWorkouts({@required User user}) async {
+    print('linkUserToWorkouts');
+    await loadAndDeserializeData(userGuid: user.uid);
   }
 
-  void _mappingAllWorkouts({@required List<Workout> originalList}) {
+  //TODO данные не всегда все показываются
+  Future<void> loadAndDeserializeData({@required String userGuid}) async {
+    print('loadAndDeserializeData, userGuid: $userGuid');
+    final allWorkouts = await myDatabase.loadUserWorkouts(userGuid: userGuid);
+
+    if (allWorkouts != null) {
+      Map<DateTime, List<Workout>> _finalMap = _mappingAllWorkouts(originalList: allWorkouts);
+      allUserWorkouts.value = AllUserWorkouts(userGuid: userGuid, dayWorkouts: _finalMap);
+    }
+  }
+
+  // putting data from firestore to local notifiers
+  Map<DateTime, List<Workout>> _mappingAllWorkouts({@required List<Workout> originalList}) {
     List<DateTime> _dateWorkoutsList = [];
-    originalList.forEach((element) => _dateWorkoutsList.add(_getOnlyDate(element.time)));
+    originalList.forEach((element) => _dateWorkoutsList.add(_getOnlyDate(date: element.time)));
+
+    // converting to set and then back to the list. deleting copies of the same dates
     _dateWorkoutsList = [
       ...{..._dateWorkoutsList}
     ];
 
+    //add to _map workouts via existing dates
     Map<DateTime, List<Workout>> _map = {
-      for (var v in _dateWorkoutsList) v: originalList.where((element) => _getOnlyDate(element.time) == v).toList()
+      for (var v in _dateWorkoutsList)
+        v: originalList.where((element) => _getOnlyDate(date: element.time) == v).toList()
     };
 
     _map.forEach((key, value) {
       _map[key].forEach((element) {
-        printer(element);
+        _printer(element);
       });
     });
 
-    allUserWorkouts.value = AllUserWorkouts(userGuid: allUserWorkouts.value.userGuid, dayWorkouts: _map);
+    print('_mappingAllWorkouts done');
+    return _map;
   }
 
-  void printer(Workout workout) {
+  void _printer(Workout workout) {
     print('printer method, workouts gymnasticsList length: ${workout.gymnasticsList.length}');
     workout.gymnasticsList.forEach((element) {
-      print('GYMNASTICS::::::${element.guid}, ${element.restTime}, ${element.workoutGuid}, ${element.exercise} ');
+      print(
+          'GYMNASTICS::::::${element.guid}, ${element.restTime}, ${element.workoutGuid}, ${element
+              .exercise} ');
       element.enteredWeightSetsRepeats.mapWsr.forEach((key, value) {
         print('KEY: $key, VALUE W: ${value.weight}, VALUE S: ${value.sets}, VALUE R: ${value.repeats}');
       });
@@ -199,5 +213,6 @@ class WorkoutController {
   }
 
   //TODO
-  void _sortByTime() {}
+  void _sortByTime() {
+  }
 }

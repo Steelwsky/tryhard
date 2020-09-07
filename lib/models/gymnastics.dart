@@ -25,14 +25,13 @@ class Gymnastics {
   final String comment;
 
   Gymnastics.fromJson(Map<String, dynamic> json)
-      : workoutGuid = json['workoutGuid'] != null ? json['workoutGuid'] : 'N',
-        guid = json['guid'] != null ? json['guid'] : 'N',
-        exercise = json['exercise'] != null ? json['exercise'] : 'N',
+      : workoutGuid = json['workoutGuid'] != null ? json['workoutGuid'] : '',
+        guid = json['guid'] != null ? json['guid'] : '',
+        exercise = json['exercise'] != null ? json['exercise'] : '',
         isPyramid = json['isPyramid'],
         enteredWeightSetsRepeats = MapWSR.fromJson(json['enteredWSR']),
         restTime = Duration(milliseconds: int.parse(json['restTime'])),
-        comment = json['comment'] != null ? json['comment'] : 'N';
-
+        comment = json['comment'] != null ? json['comment'] : '';
 
   Map<String, dynamic> toJson() {
     return {

@@ -1,6 +1,7 @@
 import 'package:date_utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import "package:intl/intl.dart";
+import 'package:tryhard/style/colors.dart';
 
 class CalendarTile extends StatelessWidget {
   final VoidCallback onDateSelected;
@@ -60,7 +61,7 @@ class CalendarTile extends StatelessWidget {
                 ? BoxDecoration(
                     shape: BoxShape.circle,
                     color: selectedColor != null
-                        ? Utils.isSameDay(this.date, DateTime.now()) ? Colors.blue : selectedColor
+                        ? Utils.isSameDay(this.date, DateTime.now()) ? PURPLE : selectedColor
                         : Theme.of(context).primaryColor,
                   )
                 : BoxDecoration(),
@@ -76,8 +77,8 @@ class CalendarTile extends StatelessWidget {
                       color: isSelected
                           ? Colors.white
                           : Utils.isSameDay(this.date, DateTime.now())
-                              ? todayColor
-                              : inMonth ? Colors.black : Colors.grey),
+                          ? todayColor
+                          : inMonth ? Colors.white : Colors.grey),
                 ),
                 events != null && events.length > 0
                     ? Row(
@@ -92,7 +93,7 @@ class CalendarTile extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               //todo add something like previous isDone
-                              color: Colors.purple,
+                              color: Utils.isSameDay(this.date, DateTime.now()) ? GREY : PURPLE,
 //                              color: Theme.of(context).primaryColor,
 //                              color: event["isDone"]
 //                                  ? eventDoneColor ??

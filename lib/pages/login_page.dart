@@ -1,9 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
-import 'package:tryhard/controller/user_controller.dart';
 import 'package:tryhard/models/user.dart';
+import 'package:tryhard/style/colors.dart';
 import 'package:tryhard/success_signin_page.dart';
 
 class LoginPageWidget extends StatefulWidget {
@@ -24,30 +23,51 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
   }
 
   void checkIfUserIsSignedIn() async {
-    var userSignedIn = await _googleSignIn.isSignedIn();
+    final userSignedIn = await _googleSignIn.isSignedIn();
 
     setState(() {
       isUserSignedIn = userSignedIn;
     });
+
+    if (userSignedIn) {
+      onGoogleSignIn(context);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    UserController userController = Provider.of<UserController>(context);
-    return Scaffold(
-        body: Container(
-            padding: EdgeInsets.all(50),
-            child: Align(
+    return isUserSignedIn
+        ? MyCircularIndicatorWidget()
+        : Scaffold(
+            body: Container(
+              padding: EdgeInsets.all(50),
+              child: Align(
                 alignment: Alignment.center,
-                child: FlatButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 32),
+                        child: Text(
+                          'TRYHARD',
+                          style: TextStyle(
+                            fontSize: 32,
+                            color: DARK_PURPLE,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      onGoogleSignIn(context, userController);
-                    },
-                    color: isUserSignedIn ? Colors.green : Colors.blueAccent,
-                    child: Padding(
+                    FlatButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      onPressed: () {
+                        onGoogleSignIn(context);
+                      },
+                      color: DARK_PURPLE,
+                      child: Padding(
                         padding: EdgeInsets.all(10),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,10 +75,16 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
                           children: <Widget>[
                             Icon(Icons.account_circle, color: Colors.white),
                             SizedBox(width: 10),
-                            Text(isUserSignedIn ? 'You\'re logged in with Google' : 'Login with Google',
-                                style: TextStyle(color: Colors.white))
+                            Text('Login with Google', style: TextStyle(color: Colors.white))
                           ],
-                        ))))));
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 
   Future<FirebaseUser> _handleSignIn() async {
@@ -89,10 +115,10 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
     return user;
   }
 
-  void onGoogleSignIn(BuildContext context, UserController userController) async {
+  void onGoogleSignIn(BuildContext context) async {
+    print('onGoogleSignIn call ******************');
     FirebaseUser firebaseUser = await _handleSignIn();
 
-    /////todo bad code
     final User user = User(
         uid: firebaseUser.uid,
         firstName: firebaseUser.displayName,
@@ -100,19 +126,8 @@ class LoginPageWidgetState extends State<LoginPageWidget> {
         phoneNumber: firebaseUser.phoneNumber,
         photo: firebaseUser.photoUrl);
 
-    userController.setUserValueNotifier(user: user);
-    userController.saveNotExistedUserGuid(user: user);
-    //////
-    var userSignedIn = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) =>
-          //dMEe4zNXInesHhEJLmxhJy0fb1n1
-          SuccessSignInPage()),
-    );
-
-    setState(() {
-      isUserSignedIn = userSignedIn == null ? true : false;
-    });
+    //TODO line 112 builds the widget twice!!!!
+    await Navigator.pushReplacementNamed(context, "/successSignIn", arguments: user, result: true);
+    // await Navigator.popAndPushNamed(context, "/successSignIn", arguments: user, result: true);
   }
 }

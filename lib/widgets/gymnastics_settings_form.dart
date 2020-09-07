@@ -80,13 +80,13 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                   Divider(),
                   WeightSetsRepeatsBuilder(),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length <= 15
-                          ? _addSetsAndRepeats()
-                          : Container(),
                       gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length > 1
                           ? _deleteSetsAndRepeats()
+                          : Container(),
+                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length <= 15
+                          ? _addSetsAndRepeats()
                           : Container(),
                     ],
                   ),
@@ -97,8 +97,8 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                       maxLength: null,
                       maxLines: null,
                       controller: _commentEditingController,
-                      onChanged: (comment) =>
-                          gymnasticsController.cacheCommentForGymnastics(comment: comment.replaceAll("\\n", "\n"))),
+                      onChanged: (comment) => gymnasticsController.cacheCommentForGymnastics(
+                          comment: comment.replaceAll("\\n", "\n"))),
                 ],
               ),
             ),
@@ -108,10 +108,12 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                 Padding(
                   padding: const EdgeInsets.only(top: 32.0),
                   child: MaterialButton(
+                    // highlightColor: ThemeData().scaffoldBackgroundColor,
                     child: Text(
                       "Cancel",
                       style: TextStyle(
                         fontSize: 18,
+                          color: BTN_SECOND_ACTION
                       ),
                     ),
                     onPressed: () {
@@ -126,23 +128,23 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                 Padding(
                   padding: const EdgeInsets.only(top: 32.0),
                   child: MaterialButton(
+                    // highlightColor: ThemeData().scaffoldBackgroundColor,
                     child: Text(
                       "Submit",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.purple),
+                      style: TextStyle(fontSize: 18,
+                        color: BTN_PRIMARY_ACTION,
+                        fontWeight: FontWeight.bold,),
                     ),
                     onPressed: () {
-                      print('---------------- workoutGuid: ${widget.workoutGuid}');
                       gymnasticsController.linkWorkoutGuidToGymnastics(widget.workoutGuid);
                       if (widget.gymnastics != null) {
-                        print('widget.gymnastics != null, ${widget.gymnastics.comment}');
                         workoutController.updateExistedWorkoutByGymnastics(
                             gymnastics: gymnasticsController.gymnastics.value);
                       } else {
-                        print('widget.gymnastics == null');
                         gymnasticsController.assignGuidToGymnastics();
-                        workoutController.addGymnasticsToWorkout(gymnastics: gymnasticsController.gymnastics.value);
+                        workoutController.addGymnasticsToWorkout(
+                            gymnastics: gymnasticsController.gymnastics.value);
                       }
-                      //todo update global
                       Navigator.pop(context);
                     },
                   ),
@@ -174,16 +176,23 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
         Container(
           height: 76,
           width: 270,
-          child: CupertinoTimerPicker(
-            alignment: Alignment.center,
-            initialTimerDuration: gymnasticsController.gymnastics.value.restTime,
-            onTimerDurationChanged: (duration) {
-              gymnasticsController.cacheRestTimeForGymnastics(duration: duration);
-              print(duration);
-            },
-            minuteInterval: 1,
-            secondInterval: 5,
-            mode: CupertinoTimerPickerMode.ms,
+          child: CupertinoTheme(
+            data: CupertinoThemeData(
+              textTheme: CupertinoTextThemeData(
+                pickerTextStyle: TextStyle(color: Colors.white),
+              ),
+            ),
+            child: CupertinoTimerPicker(
+              alignment: Alignment.center,
+              initialTimerDuration: gymnasticsController.gymnastics.value.restTime,
+              onTimerDurationChanged: (duration) {
+                gymnasticsController.cacheRestTimeForGymnastics(duration: duration);
+                print(duration);
+              },
+              minuteInterval: 1,
+              secondInterval: 5,
+              mode: CupertinoTimerPickerMode.ms,
+            ),
           ),
         ),
       ],
@@ -222,11 +231,13 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
   Widget _addSetsAndRepeats() {
     final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
     return MaterialButton(
-      splashColor: Colors.white,
-      highlightColor: ThemeData().scaffoldBackgroundColor,
+      // highlightColor: ThemeData().scaffoldBackgroundColor,
       child: Text(
         'Add',
-        style: TextStyle(fontSize: 14),
+        style: TextStyle(
+          fontSize: 14,
+          color: BTN_PRIMARY_ACTION,
+        ),
       ),
       onPressed: () {
         setState(() {
@@ -245,7 +256,10 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
       highlightColor: ThemeData().scaffoldBackgroundColor,
       child: Text(
         'Remove',
-        style: TextStyle(fontSize: 14),
+        style: TextStyle(
+          fontSize: 14,
+          color: BTN_DELETE_ACTION,
+        ),
       ),
       onPressed: () {
         setState(() {
@@ -360,7 +374,8 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
                     border: InputBorder.none,
                   ),
                   onChanged: (input) {
-                    gymnasticsController.cacheSetsForGymnastics(index: widget.index, sets: setsEditing.value.text);
+                    gymnasticsController.cacheSetsForGymnastics(
+                        index: widget.index, sets: setsEditing.value.text);
                   },
                 ),
               ),

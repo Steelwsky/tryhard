@@ -11,9 +11,6 @@ class AllPages extends StatelessWidget {
   Widget build(BuildContext context) {
     final pageController = Provider.of<MyPageController>(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('TryHard'),
-      ),
       body: ValueListenableBuilder(
           valueListenable: pageController.pageStateNotifier,
           builder: (_, page, __) {

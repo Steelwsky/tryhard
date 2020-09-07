@@ -3,6 +3,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tryhard/controller/workout_controller.dart';
+import 'package:tryhard/style/colors.dart';
 
 class WorkoutTimePicker extends StatefulWidget {
   const WorkoutTimePicker({
@@ -44,12 +45,28 @@ class _WorkoutTimePickerState extends State<WorkoutTimePicker> {
 //            color: Colors.grey,
             child: Text(
               'change',
-              style: TextStyle(fontSize: 16, color: Colors.blue),
+              style: TextStyle(
+                fontSize: 16,
+                color: BTN_PRIMARY_ACTION,
+              ),
             ),
             onPressed: () {
-              DatePicker.showTimePicker(context, showTitleActions: true, showSecondsColumn: false, onConfirm: (time) {
+              DatePicker.showTimePicker(context,
+                  showTitleActions: true,
+                  showSecondsColumn: false,
+                  theme: DatePickerTheme(
+                      backgroundColor: SCAFFOLD_BLACK,
+                      itemStyle: TextStyle(
+                        color: WHITE,
+                      ),
+                      cancelStyle: TextStyle(
+                        color: BTN_SECOND_ACTION,
+                      ),
+                      doneStyle: TextStyle(
+                        color: PURPLE,
+                      )), onConfirm: (time) {
                 //todo save to workout
-                workoutController.saveTimeWorkoutBegins(time);
+                workoutController.saveTimeWorkoutBegins(time: time);
                 setState(() {
                   _time = time;
                 });

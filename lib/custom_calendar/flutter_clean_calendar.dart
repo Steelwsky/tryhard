@@ -2,6 +2,7 @@ import 'package:date_utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:tryhard/style/colors.dart';
 
 import './calendar_tile.dart';
 import './simple_gesture_detector.dart';
@@ -114,7 +115,7 @@ class _CalendarState extends State<Calendar> {
       todayIcon = InkWell(
         child: Text(
           'Today',
-          style: TextStyle(color: Colors.blue),
+          style: TextStyle(color: PURPLE),
         ),
         onTap: resetToToday,
       );
