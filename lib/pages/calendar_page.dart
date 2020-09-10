@@ -79,45 +79,45 @@ class _CalendarScreenState extends State<CalendarScreen> {
           return dayWorkouts.length == 0
               ? Container()
               : ConstrainedBox(
-            constraints: BoxConstraints(minHeight: 50.0),
-            child: ListView(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                key: PageStorageKey('gymnasticsList'),
-                children: dayWorkouts
-                    .map((workout) =>
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: ListTile(
-                        visualDensity: VisualDensity.compact,
-                        dense: true,
-                        focusColor: Colors.grey,
-                        leading: Text(
-                          DateFormat('HH:mm').format(workout.time),
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        title: Text(
-                          '${workout.comment}',
-                          maxLines: 3,
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        subtitle: Row(
-                          children: [
-                            for (var item in workout.gymnasticsList) Text(' '),
-                          ],
-                        ),
-                        onTap: () {
-                          workoutController.setWorkout(w: workout);
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) => GymnasticsListForWorkout(workout: workout)),
-                          );
-                        },
-                      ),
-                    ))
-                    .toList()),
-          );
+                  constraints: BoxConstraints(minHeight: 50.0),
+                  child: ListView(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      key: PageStorageKey('gymnasticsList'),
+                      children: dayWorkouts
+                          .map((workout) => Card(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                                child: ListTile(
+                                  visualDensity: VisualDensity.compact,
+                                  // dense: true,
+                                  focusColor: Colors.grey,
+                                  leading: Text(
+                                    DateFormat('HH:mm').format(workout.time),
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  title: Text(
+                                    '${workout.comment}',
+                                    maxLines: 3,
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  subtitle: Row(
+                                    children: [
+                                      for (var item in workout.gymnasticsList)
+                                        item != null ? Text('${item.exercise} ') : SizedBox.shrink()
+                                    ],
+                                  ),
+                                  onTap: () {
+                                    workoutController.setWorkout(w: workout);
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (_) => GymnasticsListForWorkout(workout: workout)),
+                                    );
+                                  },
+                                ),
+                              ))
+                          .toList()),
+                );
         });
   }
 }

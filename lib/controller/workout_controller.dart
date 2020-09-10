@@ -5,22 +5,23 @@ import 'package:tryhard/models/user.dart';
 import 'package:tryhard/models/workout.dart';
 import 'package:uuid/uuid.dart';
 
+import 'user_controller.dart';
+
 class WorkoutController {
-  WorkoutController({this.myDatabase}) {
-    print('workoutController');
+  WorkoutController({this.myDatabase, UserLoggedInState userLoggedInState})
+      : _userLoggedInState = userLoggedInState {
+    print('_userLoggedInState.isLoggedIn.addListener(downloadUserWorkouts)');
+    _userLoggedInState.isLoggedIn.addListener(downloadUserWorkouts);
   }
 
-  ValueNotifier<AllUserWorkouts> allUserWorkouts =
-      ValueNotifier(AllUserWorkouts(userGuid: null, dayWorkouts: null));
+  final CloudStorage myDatabase;
+  final UserLoggedInState _userLoggedInState;
 
-  // ValueNotifier<AllUserWorkouts> allUserWorkouts =
-  // ValueNotifier(AllUserWorkouts(userGuid: '', dayWorkouts: {}));
+  ValueNotifier<AllUserWorkouts> allUserWorkouts = ValueNotifier(null);
 
   ValueNotifier<List<Workout>> dayWorkouts = ValueNotifier([]);
 
   ValueNotifier<Workout> workout = ValueNotifier(Workout(time: null, gymnasticsList: []));
-
-  final CloudStorage myDatabase;
 
   String _createNewUuid() => Uuid().v4();
 
@@ -158,12 +159,12 @@ class WorkoutController {
 
   // after user identified via google, we need to link
   // that user and download all user's data from firestore.
+
   Future<void> downloadUserWorkouts({@required User user}) async {
-    print('linkUserToWorkouts');
+    print('********downloadUserWorkouts********');
     await loadAndDeserializeData(userGuid: user.uid);
   }
 
-  //TODO данные не всегда все показываются
   Future<void> loadAndDeserializeData({@required String userGuid}) async {
     print('loadAndDeserializeData, userGuid: $userGuid');
     final allWorkouts = await myDatabase.loadUserWorkouts(userGuid: userGuid);
@@ -189,30 +190,32 @@ class WorkoutController {
       for (var v in _dateWorkoutsList)
         v: originalList.where((element) => _getOnlyDate(date: element.time) == v).toList()
     };
-
-    _map.forEach((key, value) {
-      _map[key].forEach((element) {
-        _printer(element);
-      });
-    });
-
-    print('_mappingAllWorkouts done');
+    print('_mappingAllWorkouts() done');
     return _map;
   }
 
-  void _printer(Workout workout) {
-    print('printer method, workouts gymnasticsList length: ${workout.gymnasticsList.length}');
-    workout.gymnasticsList.forEach((element) {
-      print(
-          'GYMNASTICS::::::${element.guid}, ${element.restTime}, ${element.workoutGuid}, ${element
-              .exercise} ');
-      element.enteredWeightSetsRepeats.mapWsr.forEach((key, value) {
-        print('KEY: $key, VALUE W: ${value.weight}, VALUE S: ${value.sets}, VALUE R: ${value.repeats}');
-      });
-    });
-  }
+  // _map.forEach((key, value) {
+  //   _map[key].forEach((element) {
+  //     _printer(element);
+  //   });
+  // });
+
+  // void _printer(Workout workout) {
+  //   print('printer method, workouts gymnasticsList length: ${workout.gymnasticsList.length}');
+  //   workout.gymnasticsList.forEach((element) {
+  //     print(
+  //         'GYMNASTICS::::::${element.guid}, ${element.restTime}, ${element.workoutGuid}, ${element
+  //             .exercise} ');
+  //     element.enteredWeightSetsRepeats.mapWsr.forEach((key, value) {
+  //       print('KEY: $key, VALUE W: ${value.weight}, VALUE S: ${value.sets}, VALUE R: ${value.repeats}');
+  //     });
+  //   });
+  // }
 
   //TODO
-  void _sortByTime() {
+  void _sortByTime() {}
+
+  void unsubscribe() {
+    _userLoggedInState.isLoggedIn.removeListener(downloadUserWorkouts);
   }
 }

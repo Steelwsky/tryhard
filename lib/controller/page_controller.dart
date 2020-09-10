@@ -16,8 +16,8 @@ class MyPageController extends BottomNavBarItems {
 
   final List<Widget> pages = [
 //    GymnasticsSettingsForm(),
-    CalendarScreen(),
     ProfilePage(),
+    CalendarScreen(),
   ];
 
   void pageNavBarChange(int pageIndex) async {

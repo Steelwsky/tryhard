@@ -107,8 +107,9 @@ class GymnasticsList extends StatelessWidget {
                   .map((gymnastics) => Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                         child: ListTile(
+                          visualDensity: VisualDensity.compact,
                           leading: Text(
-                            '${currentWorkout.gymnasticsList.indexOf(gymnastics) + 1}',
+                            '# ${currentWorkout.gymnasticsList.indexOf(gymnastics) + 1}',
                             style: TextStyle(fontSize: 18),
                           ),
                           title: Text(
@@ -124,9 +125,9 @@ class GymnasticsList extends StatelessWidget {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (_) => GymnasticsSettingsPage(
-                                        gymnastics: gymnastics,
-                                        workoutGuid: currentWorkout.guid,
-                                      )),
+                                    gymnastics: gymnastics,
+                                    workoutGuid: currentWorkout.guid,
+                                  )),
                             );
                             print(gymnastics.guid);
                           },
