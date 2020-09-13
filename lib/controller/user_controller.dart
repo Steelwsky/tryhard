@@ -34,7 +34,8 @@ class UserController {
       saveNotExistedUserGuid(user: userProfile.value.data);
       _userLoggedInState.isLoggedIn.value = true;
     } catch (e) {
-      userProfile.value = AsyncSnapshot.withError(ConnectionState.done, Exception('no user found!'));
+      userProfile.value =
+          AsyncSnapshot.withError(ConnectionState.done, Exception('no user found! $e'));
       _userLoggedInState.isLoggedIn.value = false;
     }
   }
@@ -63,6 +64,7 @@ class FirebaseGoogleLoginProvider implements LoginProvider {
       return user.mapToUser();
     } else {
       final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
+      print('GoogleSignInAccount: ${googleUser.id}');
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       final AuthCredential credential = GoogleAuthProvider.getCredential(

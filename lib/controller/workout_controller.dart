@@ -113,7 +113,8 @@ class WorkoutController {
     _updateLocalAllUserWorkouts();
     _sortByTime();
 
-    await myDatabase.saveGymnastics(gymnastics: gymnastics, userGuid: allUserWorkouts.value.userGuid);
+    await myDatabase.saveGymnastics(
+        gymnastics: gymnastics, userGuid: allUserWorkouts.value.userGuid);
     await myDatabase.saveWorkout(workout: workout.value, userGuid: allUserWorkouts.value.userGuid);
   }
 
@@ -134,7 +135,8 @@ class WorkoutController {
     _updateLocalDayWorkouts();
     _sortByTime();
 
-    await myDatabase.saveGymnastics(gymnastics: gymnastics, userGuid: allUserWorkouts.value.userGuid);
+    await myDatabase.saveGymnastics(
+        gymnastics: gymnastics, userGuid: allUserWorkouts.value.userGuid);
     await myDatabase.saveWorkout(workout: workout.value, userGuid: allUserWorkouts.value.userGuid);
   }
 
@@ -193,24 +195,6 @@ class WorkoutController {
     print('_mappingAllWorkouts() done');
     return _map;
   }
-
-  // _map.forEach((key, value) {
-  //   _map[key].forEach((element) {
-  //     _printer(element);
-  //   });
-  // });
-
-  // void _printer(Workout workout) {
-  //   print('printer method, workouts gymnasticsList length: ${workout.gymnasticsList.length}');
-  //   workout.gymnasticsList.forEach((element) {
-  //     print(
-  //         'GYMNASTICS::::::${element.guid}, ${element.restTime}, ${element.workoutGuid}, ${element
-  //             .exercise} ');
-  //     element.enteredWeightSetsRepeats.mapWsr.forEach((key, value) {
-  //       print('KEY: $key, VALUE W: ${value.weight}, VALUE S: ${value.sets}, VALUE R: ${value.repeats}');
-  //     });
-  //   });
-  // }
 
   //TODO
   void _sortByTime() {}

@@ -3,19 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:tryhard/controller/user_controller.dart';
 import 'package:tryhard/models/user.dart';
 import 'package:tryhard/style/colors.dart';
-import 'package:tryhard/success_signin_page.dart';
+import 'success_signin_page.dart';
 import 'package:tryhard/widgets/circular_indicator.dart';
 
-//TODO auto open SuccessPage
 class LoginPage extends StatefulWidget {
   LoginPage({
     this.userController,
-    // this.workoutController,
   });
 
   final UserController userController;
-
-  // final WorkoutController workoutController;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -186,61 +182,3 @@ class RetryLogin extends StatelessWidget {
     );
   }
 }
-
-// Future<FirebaseUser> _handleSignIn() async {
-//   FirebaseUser user;
-//   bool userSignedIn = await _googleSignIn.isSignedIn();
-//
-//   setState(() {
-//     isUserSignedIn = userSignedIn;
-//   });
-//
-//   if (isUserSignedIn) {
-//     user = await _auth.currentUser();
-//   } else {
-//     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-//     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-//
-//     final AuthCredential credential = GoogleAuthProvider.getCredential(
-//       accessToken: googleAuth.accessToken,
-//       idToken: googleAuth.idToken,
-//     );
-//
-//     user = (await _auth.signInWithCredential(credential)).user;
-//     userSignedIn = await _googleSignIn.isSignedIn();
-//     setState(() {
-//       isUserSignedIn = userSignedIn;
-//     });
-//   }
-//   return user;
-// }
-
-//@override
-//   Future<User> signIn() async {
-//     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-//     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-//
-//     final AuthCredential credential = GoogleAuthProvider.getCredential(
-//       accessToken: googleAuth.accessToken,
-//       idToken: googleAuth.idToken,
-//     );
-//
-//     final AuthResult authResult = await _auth.signInWithCredential(credential);
-//     return authResult.user.mapToUser();
-//   }
-
-// void onGoogleSignIn(BuildContext context) async {
-//   print('onGoogleSignIn call ******************');
-//   FirebaseUser firebaseUser = await _handleSignIn();
-//
-//   final User user = User(
-//       uid: firebaseUser.uid,
-//       firstName: firebaseUser.displayName,
-//       email: firebaseUser.email,
-//       phoneNumber: firebaseUser.phoneNumber,
-//       photo: firebaseUser.photoUrl);
-//
-//
-//   //TODO line 112 builds the widget twice!!!!
-//   await Navigator.pushReplacementNamed(context, "/successSignIn");
-// }

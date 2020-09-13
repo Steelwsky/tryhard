@@ -323,7 +323,6 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
   @override
   Widget build(BuildContext context) {
     final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
-
     return Column(children: <Widget>[
       Container(
         height: 50,

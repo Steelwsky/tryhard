@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:tryhard/all_pages.dart';
 import 'package:tryhard/widgets/circular_indicator.dart';
 
-import 'controller/user_controller.dart';
-import 'controller/workout_controller.dart';
-import 'models/workout.dart';
+import '../controller/user_controller.dart';
+import '../controller/workout_controller.dart';
+import '../models/workout.dart';
 
 class SuccessSignInPage extends StatefulWidget {
   @override

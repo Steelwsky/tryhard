@@ -5,7 +5,7 @@ import 'package:tryhard/controller/user_controller.dart';
 import 'package:tryhard/controller/workout_controller.dart';
 import 'package:tryhard/pages/login_page.dart';
 import 'package:tryhard/style/theme.dart';
-import 'package:tryhard/success_signin_page.dart';
+import 'pages/success_signin_page.dart';
 
 import 'controller/gymnastics_controller.dart';
 import 'controller/page_controller.dart';
@@ -80,38 +80,3 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-// class MyLogIn extends StatefulWidget {
-//   MyLogIn({this.userLoggedInState, this.onLogInChange, this.child});
-//
-//   final UserLoggedInState userLoggedInState;
-//   final Function(bool) onLogInChange;
-//   final Widget child;
-//
-//   @override
-//   _MyLogInState createState() => _MyLogInState();
-// }
-//
-// class _MyLogInState extends State<MyLogIn> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return widget.child;
-//   }
-//
-//   @override
-//   void didChangeDependencies() {
-//     // TODO: implement didChangeDependencies
-//     super.didChangeDependencies();
-//   }
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     widget.userLoggedInState.isLoggedIn.addListener(widget.onLogInChange);
-//   }
-//
-//   @override
-//   void dispose() {
-//     super.dispose();
-//     widget.userLoggedInState.isLoggedIn.removeListener(widget.onLogInChange);
-//   }
-// }

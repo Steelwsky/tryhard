@@ -22,6 +22,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final WorkoutController workoutController = Provider.of<WorkoutController>(context);
+    workoutController.changeDayWorkoutList(day: _selectedDay);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
     return ValueListenableBuilder<AllUserWorkouts>(
@@ -57,8 +65,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                         selectedColor: GREY,
                         todayColor: PURPLE,
                         eventColor: Colors.grey,
-                        dayOfWeekStyle:
-                            TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 13),
+                        dayOfWeekStyle: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w500, fontSize: 13),
                       ),
                     ),
                     AddWorkout(workoutDate: _selectedDay),
@@ -111,7 +119,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                     workoutController.setWorkout(w: workout);
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                          builder: (_) => GymnasticsListForWorkout(workout: workout)),
+                                          builder: (_) =>
+                                              GymnasticsListForWorkout(workout: workout)),
                                     );
                                   },
                                 ),
