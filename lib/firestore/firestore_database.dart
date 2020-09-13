@@ -113,7 +113,7 @@ class FirestoreDatabase {
         .updateData(workout.toJson());
   }
 
-  Future<bool> _isObjectExists({@required dynamic obj, @required String userGuid}) async {
+  Future<bool> _isObjectExists({dynamic obj, @required String userGuid}) async {
     bool isExists = false;
     if (obj is Workout) {
       isExists = (await databaseFirestore
@@ -148,12 +148,18 @@ class FirestoreDatabase {
     List<Workout> _listWorkouts = [];
     List<Gymnastics> _listGymnastics = [];
 
+    final bool userExists = await _isObjectExists(userGuid: userGuid);
+
+    if (userExists) {
+      _listGymnastics = await _loadAllUserGymnastics(userGuid: userGuid);
+      _listWorkouts =
+      await Future.delayed(Duration(seconds: 1)).then((value) =>
+          _loadAllUserWorkouts(
+            userGuid: userGuid,
+            listGymnastics: _listGymnastics,
+          ));
+    }
     //MUST BE 13
-    _listGymnastics = await _loadAllUserGymnastics(userGuid: userGuid);
-    _listWorkouts = await Future.delayed(Duration(seconds: 1)).then((value) => _loadAllUserWorkouts(
-          userGuid: userGuid,
-          listGymnastics: _listGymnastics,
-        ));
 
     return _listWorkouts;
   }
@@ -198,74 +204,11 @@ class FirestoreDatabase {
               print('_loadAllUserWorkouts()////, listGymnastics.length: ${listGymnastics.length}');
               return Workout.fromJson(
                 json: e.data,
-                gymnasticsList:
-                    listGymnastics.where((element) => element.workoutGuid == e.data['guid']).toList(),
+                gymnasticsList: listGymnastics
+                    .where((element) => element.workoutGuid == e.data['guid'])
+                    .toList(),
               );
             }).toList());
     return _listWorkouts;
   }
 }
-
-//
-
-// await _loadAllUserGymnastics(userGuid: userGuid).then((value) async {
-//   _listWorkouts = await _loadAllUserWorkouts(userGuid: userGuid, listGymnastics: value);
-// });
-
-// Future<List<Gymnastics>> _loadAllUserGymnastics({@required String userGuid}) async {
-//   print('##_loadAllUserGymnastics call');
-//   final List<Gymnastics> _listGymnastics = [];
-//
-//   final _documents =
-//   await databaseFirestore.collection('users').document(userGuid).collection('workouts').getDocuments();
-//
-//   _documents.documents.forEach((e) async {
-//     await e.reference.collection('gymnastics').getDocuments().then((value) {
-//       value.documents.forEach((element) {
-//         print('GYMNASTICS::::${element.data}');
-//         _listGymnastics.add(Gymnastics.fromJson(element.data));
-//       });
-//       print('AFTER _loadAllUserGymnastics, listGymnastics length: ${_listGymnastics.length}');
-//     });
-//   });
-//   return _listGymnastics;
-// }
-
-// //TODO gymnastics in some cases are not downloaded!
-//   Future<List<Workout>> loadUserWorkouts({@required String userGuid}) async {
-//     print('loadUserWorkouts: $userGuid');
-//     List<Workout> _listWorkouts = [];
-//     final List<Gymnastics> _listGymnastics = [];
-//
-//     await databaseFirestore
-//         .collection('users')
-//         .document(userGuid)
-//         .collection('workouts')
-//         .getDocuments()
-//         .then((snapshot) {
-//       snapshot.documents.forEach((e) {
-//         e.reference
-//             .collection('gymnastics')
-//             .getDocuments()
-//             .then((value) => value.documents.forEach((element) {
-//                   _listGymnastics.add(Gymnastics.fromJson(element.data));
-//                 }));
-//       });
-//     }).then((_) async {
-//       _listWorkouts = await databaseFirestore
-//           .collection('users')
-//           .document(userGuid)
-//           .collection('workouts')
-//           .getDocuments()
-//           .then((snapshot) => snapshot.documents
-//               .map((e) => Workout.fromJson(
-//                     json: e.data,
-//                     gymnasticsList:
-//                         _listGymnastics.where((element) => element.workoutGuid == e.data['guid']).toList(),
-//                   ))
-//               .toList());
-//       print('after loadUserWorkouts');
-//     });
-//
-//     return _listWorkouts;
-//   }

@@ -49,10 +49,9 @@ class _LoginPageState extends State<LoginPage> {
         } else if (snapshot.hasError) {
           return RetryLogin();
         } else if (snapshot.hasData && snapshot.data != null) {
-          print('snapshot.hasData && snapshot.data != null: ${snapshot.data.uid}');
+          print('snapshot.hasData && snapshot.data != null');
           return SuccessSignInPage();
         } else
-          // return Login();
           return MyCircularIndicatorWidget();
       },
     );

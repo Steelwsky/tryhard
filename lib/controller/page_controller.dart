@@ -5,7 +5,7 @@ import 'package:tryhard/pages/profile_page.dart';
 
 //enum Pages {home, add, , calendar }
 
-const int INITIAL_PAGE = 1;
+const int INITIAL_PAGE = 0;
 
 class MyPageController extends BottomNavBarItems {
   ValueNotifier<int> pageStateNotifier = ValueNotifier(INITIAL_PAGE);
@@ -16,8 +16,8 @@ class MyPageController extends BottomNavBarItems {
 
   final List<Widget> pages = [
 //    GymnasticsSettingsForm(),
-    ProfilePage(),
     CalendarScreen(),
+    ProfilePage(),
   ];
 
   void pageNavBarChange(int pageIndex) async {
