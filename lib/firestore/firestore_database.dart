@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:tryhard/models/gymnastics.dart';
 import 'package:tryhard/models/user.dart';
 import 'package:tryhard/models/workout.dart';
@@ -13,13 +12,14 @@ class FirestoreDatabase {
     return _instance;
   }
 
-  final databaseFirestore = Firestore.instance;
+  final databaseFirestore = FirebaseFirestore.instance;
 
-  Future<void> saveNotExistedUser({@required User user}) async {
-    final bool userExists = await _isObjectExists(obj: user, userGuid: user.uid);
+  Future<void> saveNotExistedUser({required User? user}) async {
+    final bool userExists =
+        await _isObjectExists(obj: user, userGuid: user!.uid);
 
     if (!userExists) {
-      databaseFirestore.collection('users').document(user.uid).setData({
+      databaseFirestore.collection('users').doc(user.uid).set({
         'firstName': user.firstName,
         'secondName': user.secondName,
         'email': user.email,
@@ -32,8 +32,8 @@ class FirestoreDatabase {
   }
 
   Future<void> saveGymnastics({
-    @required Gymnastics gymnastics,
-    @required String userGuid,
+    required Gymnastics gymnastics,
+    required String? userGuid,
   }) async {
     final bool gymnasticsExists = await _isObjectExists(obj: gymnastics, userGuid: userGuid);
 
@@ -45,23 +45,23 @@ class FirestoreDatabase {
   }
 
   void _createGymnastics({
-    @required Gymnastics gymnastics,
-    @required String userGuid,
+    required Gymnastics gymnastics,
+    required String? userGuid,
   }) {
     databaseFirestore
         .collection('users')
-        .document(userGuid)
+        .doc(userGuid)
         .collection('workouts')
-        .document(gymnastics.workoutGuid)
+        .doc(gymnastics.workoutGuid)
         .collection('gymnastics')
-        .document('${gymnastics.guid}')
-        .setData(gymnastics.toJson());
+        .doc('${gymnastics.guid}')
+        .set(gymnastics.toJson());
     print('saved gymnastics to firestore');
   }
 
   Future<void> saveWorkout({
-    @required Workout workout,
-    @required String userGuid,
+    required Workout workout,
+    required String? userGuid,
   }) async {
     final bool workoutExists = await _isObjectExists(obj: workout, userGuid: userGuid);
 
@@ -76,74 +76,76 @@ class FirestoreDatabase {
   }
 
   void _createWorkout({
-    @required Workout workout,
-    @required String userGuid,
+    required Workout workout,
+    required String? userGuid,
   }) {
     databaseFirestore
         .collection('users')
-        .document(userGuid)
+        .doc(userGuid)
         .collection('workouts')
-        .document(workout.guid)
-        .setData(workout.toJson());
+        .doc(workout.guid)
+        .set(workout.toJson());
   }
 
   Future<void> _updateExistedGymnastics({
-    @required Gymnastics gymnastics,
-    @required String userGuid,
+    required Gymnastics gymnastics,
+    required String? userGuid,
   }) async {
     databaseFirestore
         .collection('users')
-        .document(userGuid)
+        .doc(userGuid)
         .collection('workouts')
-        .document(gymnastics.workoutGuid)
+        .doc(gymnastics.workoutGuid)
         .collection('gymnastics')
-        .document(gymnastics.guid)
-        .setData(gymnastics.toJson());
+        .doc(gymnastics.guid)
+        .set(gymnastics.toJson());
   }
 
   Future<void> _updateExistedWorkout({
-    @required Workout workout,
-    @required String userGuid,
+    required Workout workout,
+    required String? userGuid,
   }) async {
     databaseFirestore
         .collection('users')
-        .document(userGuid)
+        .doc(userGuid)
         .collection('workouts')
-        .document(workout.guid)
-        .updateData(workout.toJson());
+        .doc(workout.guid)
+        .update(workout.toJson());
   }
 
-  Future<bool> _isObjectExists({dynamic obj, @required String userGuid}) async {
+  Future<bool> _isObjectExists({dynamic obj, required String? userGuid}) async {
     bool isExists = false;
     if (obj is Workout) {
       isExists = (await databaseFirestore
               .collection('users')
-              .document(userGuid)
+              .doc(userGuid)
               .collection('workouts')
-              .document(obj.guid)
+              .doc(obj.guid)
               .get())
           .exists;
       return isExists;
     } else if (obj is Gymnastics) {
       isExists = (await databaseFirestore
               .collection('users')
-              .document(userGuid)
+              .doc(userGuid)
               .collection('workouts')
-              .document(obj.workoutGuid)
+              .doc(obj.workoutGuid)
               .collection('gymnastics')
-              .document(obj.guid)
+              .doc(obj.guid)
               .get())
           .exists;
       return isExists;
     } else if (obj is User) {
-      isExists = (await databaseFirestore.collection('users').document(userGuid).get()).exists;
+      isExists =
+          (await databaseFirestore.collection('users').doc(userGuid).get())
+              .exists;
       return isExists;
     }
     return isExists;
   }
 
   //TODO gymnastics in some cases are not downloaded!
-  Future<List<Workout>> loadUserWorkouts({@required String userGuid}) async {
+  Future<List<Workout>> loadUserWorkouts({required String? userGuid}) async {
     print('loadUserWorkouts: $userGuid');
     List<Workout> _listWorkouts = [];
     List<Gymnastics> _listGymnastics = [];
@@ -152,9 +154,8 @@ class FirestoreDatabase {
 
     if (userExists) {
       _listGymnastics = await _loadAllUserGymnastics(userGuid: userGuid);
-      _listWorkouts =
-      await Future.delayed(Duration(seconds: 1)).then((value) =>
-          _loadAllUserWorkouts(
+      _listWorkouts = await Future.delayed(Duration(seconds: 1))
+          .then((value) => _loadAllUserWorkouts(
             userGuid: userGuid,
             listGymnastics: _listGymnastics,
           ));
@@ -164,21 +165,22 @@ class FirestoreDatabase {
     return _listWorkouts;
   }
 
-  Future<List<Gymnastics>> _loadAllUserGymnastics({@required String userGuid}) async {
+  Future<List<Gymnastics>> _loadAllUserGymnastics(
+      {required String? userGuid}) async {
     print('##_loadAllUserGymnastics call');
     final List<Gymnastics> _listGymnastics = [];
 
     await databaseFirestore
         .collection('users')
-        .document(userGuid)
+        .doc(userGuid)
         .collection('workouts')
-        .getDocuments()
+        .get()
         .then((snapshot) {
-      snapshot.documents.forEach((e) async {
-        await e.reference.collection('gymnastics').getDocuments().then((value) {
-          value.documents.forEach((element) {
+      snapshot.docs.forEach((e) async {
+        await e.reference.collection('gymnastics').get().then((value) {
+          value.docs.forEach((element) {
             // print('GYMNASTICS::::${element.data}');
-            _listGymnastics.add(Gymnastics.fromJson(element.data));
+            _listGymnastics.add(Gymnastics.fromJson(element.data()));
           });
           print('_loadAllUserGymnastics()####, forEach(element), '
               'listGymnastics length: ${_listGymnastics.length}');
@@ -189,23 +191,24 @@ class FirestoreDatabase {
   }
 
   Future<List<Workout>> _loadAllUserWorkouts({
-    @required String userGuid,
-    @required List<Gymnastics> listGymnastics,
+    required String? userGuid,
+    required List<Gymnastics> listGymnastics,
   }) async {
     List<Workout> _listWorkouts = [];
     print('##_loadAllUserWorkouts call');
     print('_loadAllUserWorkouts, listGymnastics length: ${listGymnastics.length}');
     _listWorkouts = await databaseFirestore
         .collection('users')
-        .document(userGuid)
+        .doc(userGuid)
         .collection('workouts')
-        .getDocuments()
-        .then((snapshot) => snapshot.documents.map((e) {
-              print('_loadAllUserWorkouts()////, listGymnastics.length: ${listGymnastics.length}');
+        .get()
+        .then((snapshot) => snapshot.docs.map((e) {
+              print(
+                  '_loadAllUserWorkouts()////, listGymnastics.length: ${listGymnastics.length}');
               return Workout.fromJson(
-                json: e.data,
+                json: e.data(),
                 gymnasticsList: listGymnastics
-                    .where((element) => element.workoutGuid == e.data['guid'])
+                    .where((element) => element.workoutGuid == e.data()['guid'])
                     .toList(),
               );
             }).toList());

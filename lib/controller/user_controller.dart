@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -7,20 +7,20 @@ import 'package:tryhard/models/user.dart';
 
 class UserController {
   UserController({
-    @required PersistUser persistUser,
-    @required LoginProvider loginProvider,
-    @required UserLoggedInState userLoggedInState,
+    required PersistUser persistUser,
+    required LoginProvider? loginProvider,
+    required UserLoggedInState userLoggedInState,
   })  : _persistUser = persistUser,
         _loginProvider = loginProvider,
         _userLoggedInState = userLoggedInState;
 
   final PersistUser _persistUser;
-  final LoginProvider _loginProvider;
+  final LoginProvider? _loginProvider;
   final UserLoggedInState _userLoggedInState;
 
-  ValueNotifier<AsyncSnapshot<User>> userProfile = ValueNotifier(null);
+  ValueNotifier<AsyncSnapshot<User>?> userProfile = ValueNotifier(null);
 
-  void saveNotExistedUserGuid({@required User user}) {
+  void saveNotExistedUserGuid({required User? user}) {
     _persistUser(user: user);
   }
 
@@ -28,11 +28,11 @@ class UserController {
     print('onSignIn call ******************');
 
     try {
-      final User user = await _loginProvider.signIn();
+      final User user = await _loginProvider!.signIn();
       print('user: ${user.uid}');
       userProfile.value = AsyncSnapshot.withData(ConnectionState.done, user);
-      print('userProfile.value: ${userProfile.value.data.uid}');
-      saveNotExistedUserGuid(user: userProfile.value.data);
+      print('userProfile.value: ${userProfile.value!.data!.uid}');
+      saveNotExistedUserGuid(user: userProfile.value!.data);
       _userLoggedInState.isLoggedIn.value = true;
     } catch (e) {
       print('ERROR: $e');
@@ -43,7 +43,7 @@ class UserController {
   }
 
   Future<bool> isSignIn() async {
-    return await _loginProvider.isSignIn();
+    return await _loginProvider!.isSignIn();
   }
 }
 
@@ -56,26 +56,26 @@ abstract class LoginProvider {
 
 class FirebaseGoogleLoginProvider implements LoginProvider {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final auth.FirebaseAuth _auth = auth.FirebaseAuth.instance;
 
   @override
   Future<User> signIn() async {
     bool userSignedIn = await isSignIn();
     if (userSignedIn) {
-      FirebaseUser user = await _auth.currentUser();
+      auth.User user = _auth.currentUser!;
       return user._mapToUser();
     } else {
-      final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-      print('GoogleSignInAccount: ${googleUser.id}');
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      print('GoogleSignInAccount: ${googleUser?.id}');
+      // final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.getCredential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+      // final auth.AuthCredential credential = auth.AuthCredential(
+      //   accessToken: googleAuth.accessToken,
+      //   token: googleAuth.idToken,
+      // );
 
-      final AuthResult authResult = await _auth.signInWithCredential(credential);
-      return authResult.user._mapToUser();
+      final auth.UserCredential authResult = await _auth.signInAnonymously();
+      return authResult.user!._mapToUser();
     }
   }
 
@@ -85,13 +85,13 @@ class FirebaseGoogleLoginProvider implements LoginProvider {
   }
 }
 
-extension on FirebaseUser {
+extension on auth.User {
   User _mapToUser() => User(
         uid: uid,
         firstName: displayName,
         email: email,
         phoneNumber: phoneNumber,
-        photo: photoUrl,
+        photo: photoURL,
       );
 }
 

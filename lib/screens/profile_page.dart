@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
   ProfilePage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

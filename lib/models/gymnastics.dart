@@ -3,7 +3,7 @@
 class GymnasticsList {
   GymnasticsList({this.gymnasticsList});
 
-  final List<Gymnastics> gymnasticsList;
+  final List<Gymnastics>? gymnasticsList;
 }
 
 class Gymnastics {
@@ -16,13 +16,13 @@ class Gymnastics {
       this.restTime,
       this.comment});
 
-  final String workoutGuid;
-  final String guid;
-  final String exercise;
-  final bool isPyramid;
-  final MapWSR enteredWeightSetsRepeats;
-  final Duration restTime;
-  final String comment;
+  final String? workoutGuid;
+  final String? guid;
+  final String? exercise;
+  final bool? isPyramid;
+  final MapWSR? enteredWeightSetsRepeats;
+  final Duration? restTime;
+  final String? comment;
 
   Gymnastics.fromJson(Map<String, dynamic> json)
       : workoutGuid = json['workoutGuid'] != null ? json['workoutGuid'] : '',
@@ -39,19 +39,40 @@ class Gymnastics {
       'guid': guid,
       'exercise': exercise,
       'isPyramid': isPyramid,
-      'enteredWSR': enteredWeightSetsRepeats.toJson(),
-      'restTime': restTime.inMilliseconds.toString(),
+      'enteredWSR': enteredWeightSetsRepeats!.toJson(),
+      'restTime': restTime!.inMilliseconds.toString(),
       'comment': comment,
     };
+  }
+
+  Gymnastics copyWith({
+    final String? workoutGuid,
+    final String? guid,
+    final String? exercise,
+    final bool? isPyramid,
+    final MapWSR? enteredWeightSetsRepeats,
+    final Duration? restTime,
+    final String? comment,
+  }) {
+    return new Gymnastics(
+      workoutGuid: workoutGuid ?? this.workoutGuid,
+      guid: guid ?? this.guid,
+      exercise: exercise ?? this.exercise,
+      isPyramid: isPyramid ?? this.isPyramid,
+      enteredWeightSetsRepeats:
+          enteredWeightSetsRepeats ?? this.enteredWeightSetsRepeats,
+      restTime: restTime ?? this.restTime,
+      comment: comment ?? this.comment,
+    );
   }
 }
 
 class WeightSetsRepeats {
   WeightSetsRepeats({this.weight, this.sets, this.repeats});
 
-  final String weight;
-  final String sets;
-  final String repeats;
+  final String? weight;
+  final String? sets;
+  final String? repeats;
 
   Map<String, dynamic> toJson() => {
         'weight': weight,
@@ -68,20 +89,20 @@ class WeightSetsRepeats {
 class MapWSR {
   MapWSR({this.mapWsr});
 
-  Map<int, WeightSetsRepeats> mapWsr;
+  Map<int?, WeightSetsRepeats>? mapWsr;
 
   List<dynamic> toJson() => getValueWSR();
 
   MapWSR.fromJson(List<dynamic> json)
-      : mapWsr = json.asMap().map((key, value) =>
-      MapEntry<int, WeightSetsRepeats>(
-        key,
-        WeightSetsRepeats.fromJson(value),
-      ));
+      : mapWsr =
+            json.asMap().map((key, value) => MapEntry<int, WeightSetsRepeats>(
+                  key,
+                  WeightSetsRepeats.fromJson(value),
+                ));
 
   List<Map<String, dynamic>> getValueWSR() {
     List<Map<String, dynamic>> _wsr = [];
-    mapWsr.forEach((key, value) {
+    mapWsr!.forEach((key, value) {
       _wsr.add(value.toJson());
     });
     return _wsr;

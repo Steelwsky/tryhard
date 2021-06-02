@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:tryhard/controller/workout_controller.dart';
 import 'package:tryhard/custom_calendar/flutter_clean_calendar.dart';
 import 'package:tryhard/models/workout.dart';
-import 'package:tryhard/pages/workout_gymnastics_list.dart';
+import 'package:tryhard/screens/workout_gymnastics_list.dart';
 import 'package:tryhard/style/colors.dart';
 
 class CalendarScreen extends StatefulWidget {
@@ -13,26 +13,28 @@ class CalendarScreen extends StatefulWidget {
 }
 
 class _CalendarScreenState extends State<CalendarScreen> {
-  DateTime _selectedDay;
+  DateTime? _selectedDay;
 
   @override
   void initState() {
     super.initState();
-    _selectedDay = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    _selectedDay =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final WorkoutController workoutController = Provider.of<WorkoutController>(context);
-    workoutController.changeDayWorkoutList(day: _selectedDay);
+    final WorkoutController workoutController =
+        Provider.of<WorkoutController>(context);
+    workoutController.changeDayWorkoutList(day: _selectedDay!);
   }
 
   @override
   Widget build(BuildContext context) {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
-    return ValueListenableBuilder<AllUserWorkouts>(
+    return ValueListenableBuilder<AllUserWorkouts?>(
         valueListenable: workoutController.allUserWorkouts,
         builder: (_, allWorkouts, __) {
           return SafeArea(
@@ -50,13 +52,22 @@ class _CalendarScreenState extends State<CalendarScreen> {
                       key: PageStorageKey('calendar'),
                       child: Calendar(
                         startOnMonday: true,
-                        weekDays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                        events: allWorkouts.dayWorkouts,
+                        weekDays: [
+                          "Mon",
+                          "Tue",
+                          "Wed",
+                          "Thu",
+                          "Fri",
+                          "Sat",
+                          "Sun"
+                        ],
+                        events: allWorkouts!.dayWorkouts,
                         onDateSelected: (date) {
                           setState(() {
                             _selectedDay = date;
                           });
-                          workoutController.changeDayWorkoutList(day: _selectedDay);
+                          workoutController.changeDayWorkoutList(
+                              day: _selectedDay!);
                         },
                         isExpandable: false,
                         isExpanded: true,
@@ -81,10 +92,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
 
   Widget _buildEventList() {
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
-    return ValueListenableBuilder<List<Workout>>(
+    return ValueListenableBuilder<List<Workout>?>(
         valueListenable: workoutController.dayWorkouts,
         builder: (_, dayWorkouts, __) {
-          return dayWorkouts.length == 0
+          return dayWorkouts!.length == 0
               ? Container()
               : ConstrainedBox(
                   constraints: BoxConstraints(minHeight: 50.0),
@@ -101,7 +112,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   // dense: true,
                                   focusColor: Colors.grey,
                                   leading: Text(
-                                    DateFormat('HH:mm').format(workout.time),
+                                    DateFormat('HH:mm').format(workout.time!),
                                     style: TextStyle(fontSize: 18),
                                   ),
                                   title: Text(
@@ -111,8 +122,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                                   ),
                                   subtitle: Row(
                                     children: [
-                                      for (var item in workout.gymnasticsList)
-                                        item != null ? Text('${item.exercise} ') : SizedBox.shrink()
+                                      for (var item in workout.gymnasticsList!)
+                                        item != null
+                                            ? Text('${item.exercise} ')
+                                            : SizedBox.shrink()
                                     ],
                                   ),
                                   onTap: () {
@@ -132,13 +145,14 @@ class _CalendarScreenState extends State<CalendarScreen> {
 }
 
 class AddWorkout extends StatelessWidget {
-  AddWorkout({Key key, this.workoutDate}) : super(key: key);
+  AddWorkout({Key? key, this.workoutDate}) : super(key: key);
 
-  final DateTime workoutDate;
+  final DateTime? workoutDate;
 
   @override
   Widget build(BuildContext context) {
-    final WorkoutController workoutController = Provider.of<WorkoutController>(context);
+    final WorkoutController workoutController =
+        Provider.of<WorkoutController>(context);
     return Padding(
       padding: const EdgeInsets.only(top: 16),
       child: Container(
@@ -152,10 +166,9 @@ class AddWorkout extends StatelessWidget {
             ),
           ),
           onPressed: () {
-            workoutController.createNewWorkoutToCalendar(date: workoutDate);
+            workoutController.createNewWorkoutToCalendar(date: workoutDate!);
             Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    GymnasticsListForWorkout(
+                builder: (context) => GymnasticsListForWorkout(
                       workout: workoutController.workout.value,
                     )));
           },

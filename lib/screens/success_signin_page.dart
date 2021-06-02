@@ -18,15 +18,17 @@ class _SuccessSignInPageState extends State<SuccessSignInPage> {
     super.didChangeDependencies();
 
     final UserController userController = Provider.of<UserController>(context);
-    final WorkoutController workoutController = Provider.of<WorkoutController>(context);
-    await workoutController.downloadUserWorkouts(user: userController.userProfile.value.data);
+    final WorkoutController workoutController =
+        Provider.of<WorkoutController>(context);
+    await workoutController.downloadUserWorkouts(
+        user: userController.userProfile.value!.data!);
   }
 
   @override
   Widget build(BuildContext context) {
     print('SuccessSignInPage build --------------');
     final WorkoutController workoutController = Provider.of<WorkoutController>(context);
-    return ValueListenableBuilder<AllUserWorkouts>(
+    return ValueListenableBuilder<AllUserWorkouts?>(
         valueListenable: workoutController.allUserWorkouts,
         builder: (_, allWorkouts, __) {
           return allWorkouts != null ? AllPages() : MyCircularIndicatorWidget();

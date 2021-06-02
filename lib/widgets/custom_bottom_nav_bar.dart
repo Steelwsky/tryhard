@@ -17,9 +17,9 @@ class CustomBottomNavigationBar extends StatelessWidget {
               selectedItemColor: BTN_PRIMARY_ACTION,
               items: [
                 ...myBottomNavBarItems.tabs.map((tab) => BottomNavigationBarItem(
-                      title: Text(tab.name),
-                      icon: tab.icon,
-                    )),
+                          title: Text(tab.name!),
+                          icon: tab.icon!,
+                        )),
               ],
               currentIndex: pageState,
               onTap: (index) {

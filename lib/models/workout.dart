@@ -1,18 +1,24 @@
-import 'package:flutter/material.dart';
 import 'package:tryhard/models/gymnastics.dart';
 import 'package:tryhard/utils/timestamp_helper.dart';
 
 class Workout {
-  Workout({this.guid, @required this.time, this.comment, @required this.gymnasticsList});
+  Workout(
+      {this.guid,
+      required this.time,
+      this.comment,
+      required this.gymnasticsList});
 
-  final String guid;
-  final DateTime time;
-  final String comment;
-  final List<Gymnastics> gymnasticsList;
+  final String? guid;
+  final DateTime? time;
+  final String? comment;
+  final List<Gymnastics>? gymnasticsList;
 
-  Workout.fromJson({@required Map<String, dynamic> json, List<Gymnastics> gymnasticsList})
+  Workout.fromJson(
+      {required Map<String, dynamic> json, List<Gymnastics>? gymnasticsList})
       : guid = json['guid'] != null ? json['guid'] : '',
-        time = json['time'] != null ? timestampHelper(timestamp: json['time']) : '',
+        time = json['time'] != null
+            ? timestampHelper(timestamp: json['time'])
+            : '' as DateTime?,
         comment = json['comment'] != null ? json['comment'] : '',
         gymnasticsList = gymnasticsList != null ? gymnasticsList : null;
 
@@ -32,11 +38,11 @@ class Workout {
 }
 
 class AllUserWorkouts {
-  AllUserWorkouts({@required this.userGuid, @required this.dayWorkouts});
+  AllUserWorkouts({required this.userGuid, required this.dayWorkouts});
 
 //  final String guid;      // TODO 27.08 -- seems useless
-  final String userGuid;
-  final Map<DateTime, List<Workout>> dayWorkouts;
+  final String? userGuid;
+  final Map<DateTime, List<Workout>?> dayWorkouts;
 
   //// seems useless
   Map<String, dynamic> toJson() {
@@ -59,16 +65,14 @@ class AllUserWorkouts {
     return _list;
   }
 
-  List<String> _getWorkoutsGuid(String key) {
-    List<String> _list = [];
+  List<String?> _getWorkoutsGuid(String key) {
+    List<String?> _list = [];
     if (dayWorkouts.containsKey(key)) {
       print('containsKey');
-      dayWorkouts[key].forEach((element) {
+      dayWorkouts[key as DateTime]!.forEach((element) {
         _list.add(element.guid);
       });
     }
     return _list;
   }
-
-
 }

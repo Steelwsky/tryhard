@@ -9,27 +9,29 @@ import 'package:tryhard/style/colors.dart';
 class GymnasticsSettingsForm extends StatefulWidget {
   GymnasticsSettingsForm(
     this.workoutGuid, {
-    Key key,
+    Key? key,
     this.gymnastics,
   }) : super(key: key);
 
-  final Gymnastics gymnastics;
-  final String workoutGuid;
+  final Gymnastics? gymnastics;
+  final String? workoutGuid;
 
   @override
   _GymnasticsSettingsForm createState() => _GymnasticsSettingsForm();
 }
 
 class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
-  TextEditingController _exerciseEditingController;
-  TextEditingController _commentEditingController;
+  TextEditingController? _exerciseEditingController;
+  TextEditingController? _commentEditingController;
 
   @override
   void initState() {
     super.initState();
     if (widget.gymnastics != null) {
-      _exerciseEditingController = TextEditingController(text: widget.gymnastics.exercise);
-      _commentEditingController = TextEditingController(text: widget.gymnastics.comment);
+      _exerciseEditingController =
+          TextEditingController(text: widget.gymnastics!.exercise);
+      _commentEditingController =
+          TextEditingController(text: widget.gymnastics!.comment);
     } else {
       _exerciseEditingController = TextEditingController();
       _commentEditingController = TextEditingController();
@@ -48,7 +50,6 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
           children: [
             Form(
               key: PageStorageKey('addition_page'),
-              autovalidate: true,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
@@ -82,10 +83,14 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length > 1
+                      gymnasticsController.gymnastics.value
+                                  .enteredWeightSetsRepeats!.mapWsr!.length >
+                              1
                           ? _deleteSetsAndRepeats()
                           : Container(),
-                      gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length <= 15
+                      gymnasticsController.gymnastics.value
+                                  .enteredWeightSetsRepeats!.mapWsr!.length <=
+                              15
                           ? _addSetsAndRepeats()
                           : Container(),
                     ],
@@ -184,9 +189,11 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
             ),
             child: CupertinoTimerPicker(
               alignment: Alignment.center,
-              initialTimerDuration: gymnasticsController.gymnastics.value.restTime,
+              initialTimerDuration:
+                  gymnasticsController.gymnastics.value.restTime!,
               onTimerDurationChanged: (duration) {
-                gymnasticsController.cacheRestTimeForGymnastics(duration: duration);
+                gymnasticsController.cacheRestTimeForGymnastics(
+                    duration: duration);
                 print(duration);
               },
               minuteInterval: 1,
@@ -214,7 +221,7 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
               ),
               CupertinoSwitch(
                 activeColor: DARK_PURPLE,
-                value: gymnasticsController.gymnastics.value.isPyramid,
+                value: gymnasticsController.gymnastics.value.isPyramid!,
                 onChanged: (isPyramid) {
                   setState(() {
                     gymnasticsController.cacheIsPyramid(value: isPyramid);
@@ -241,9 +248,10 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
       ),
       onPressed: () {
         setState(() {
-          gymnasticsController.gymnastics.value.enteredWeightSetsRepeats
-              .mapWsr[gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length] =
-              WeightSetsRepeats();
+          gymnasticsController
+                  .gymnastics.value.enteredWeightSetsRepeats!.mapWsr![
+              gymnasticsController.gymnastics.value.enteredWeightSetsRepeats!
+                  .mapWsr!.length] = WeightSetsRepeats();
         });
       },
     );
@@ -263,8 +271,11 @@ class _GymnasticsSettingsForm extends State<GymnasticsSettingsForm> {
       ),
       onPressed: () {
         setState(() {
-          gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr
-              .remove(gymnasticsController.gymnastics.value.enteredWeightSetsRepeats.mapWsr.length - 1);
+          gymnasticsController
+              .gymnastics.value.enteredWeightSetsRepeats!.mapWsr!
+              .remove(gymnasticsController.gymnastics.value
+                      .enteredWeightSetsRepeats!.mapWsr!.length -
+                  1);
         });
       },
     );
@@ -283,10 +294,13 @@ class WeightSetsRepeatsBuilder extends StatelessWidget {
             return ListView.builder(
                 shrinkWrap: true,
                 physics: NeverScrollableScrollPhysics(),
-                itemCount: newGymnastics.enteredWeightSetsRepeats.mapWsr.length,
+                itemCount:
+                    newGymnastics.enteredWeightSetsRepeats!.mapWsr!.length,
                 itemBuilder: (context, count) {
                   return WeightSetsAndRepeatsWidget(
-                      index: count, weightSetsRepeats: newGymnastics.enteredWeightSetsRepeats.mapWsr[count]);
+                      index: count,
+                      weightSetsRepeats: newGymnastics
+                          .enteredWeightSetsRepeats!.mapWsr![count]);
                 });
           }),
     );
@@ -297,27 +311,30 @@ class WeightSetsAndRepeatsWidget extends StatefulWidget {
   const WeightSetsAndRepeatsWidget({
     this.index,
     this.weightSetsRepeats,
-    Key key,
+    Key? key,
   }) : super(key: key);
 
-  final int index;
-  final WeightSetsRepeats weightSetsRepeats;
+  final int? index;
+  final WeightSetsRepeats? weightSetsRepeats;
 
   @override
-  _WeightSetsAndRepeatsWidgetState createState() => _WeightSetsAndRepeatsWidgetState();
+  _WeightSetsAndRepeatsWidgetState createState() =>
+      _WeightSetsAndRepeatsWidgetState();
 }
 
 class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget> {
-  TextEditingController weightEditing;
-  TextEditingController setsEditing;
-  TextEditingController repeatsEditing;
+  TextEditingController? weightEditing;
+  TextEditingController? setsEditing;
+  TextEditingController? repeatsEditing;
 
   @override
   void initState() {
     super.initState();
-    weightEditing = TextEditingController(text: widget.weightSetsRepeats.weight);
-    setsEditing = TextEditingController(text: widget.weightSetsRepeats.sets);
-    repeatsEditing = TextEditingController(text: widget.weightSetsRepeats.repeats);
+    weightEditing =
+        TextEditingController(text: widget.weightSetsRepeats!.weight);
+    setsEditing = TextEditingController(text: widget.weightSetsRepeats!.sets);
+    repeatsEditing =
+        TextEditingController(text: widget.weightSetsRepeats!.repeats);
   }
 
   @override
@@ -344,7 +361,7 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
                   ),
                   onChanged: (_) {
                     gymnasticsController.cacheWeightForGymnastics(
-                        index: widget.index, weight: weightEditing.value.text);
+                        index: widget.index, weight: weightEditing!.value.text);
                   },
                 ),
               ),
@@ -374,7 +391,7 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
                   ),
                   onChanged: (input) {
                     gymnasticsController.cacheSetsForGymnastics(
-                        index: widget.index, sets: setsEditing.value.text);
+                        index: widget.index, sets: setsEditing!.value.text);
                   },
                 ),
               ),
@@ -404,7 +421,8 @@ class _WeightSetsAndRepeatsWidgetState extends State<WeightSetsAndRepeatsWidget>
                   ),
                   onChanged: (input) {
                     gymnasticsController.cacheRepeatsForGymnastics(
-                        index: widget.index, repeats: repeatsEditing.value.text);
+                        index: widget.index,
+                        repeats: repeatsEditing!.value.text);
                   },
                 ),
               ),

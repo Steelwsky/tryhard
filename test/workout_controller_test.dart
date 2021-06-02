@@ -14,7 +14,7 @@ class FakeDatabase implements CloudStorage {
   final Future<List<Workout>> fakeWorkoutList = Future.value([]);
 
   @override
-  get loadUserWorkouts => ({String userGuid}) => fakeWorkoutList;
+  get loadUserWorkouts => ({String? userGuid}) => fakeWorkoutList;
 
   @override
   get saveGymnastics => throw UnimplementedError();

@@ -13,8 +13,9 @@ class AllPages extends StatelessWidget {
     return Scaffold(
       body: ValueListenableBuilder(
           valueListenable: pageController.pageStateNotifier,
-          builder: (_, page, __) {
-            return pageController.pages.elementAt(pageController.pageStateNotifier.value);
+          builder: (_, dynamic page, __) {
+            return pageController.pages
+                .elementAt(pageController.pageStateNotifier.value);
           }),
       bottomNavigationBar: CustomBottomNavigationBar(),
     );

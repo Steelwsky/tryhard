@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 class SimpleGestureDetector extends StatefulWidget {
   final Widget child;
   final SimpleSwipeConfig swipeConfig;
-  final HitTestBehavior behavior;
-  final VoidCallback onSwipeUp;
-  final VoidCallback onSwipeDown;
-  final VoidCallback onSwipeLeft;
-  final VoidCallback onSwipeRight;
+  final HitTestBehavior? behavior;
+  final VoidCallback? onSwipeUp;
+  final VoidCallback? onSwipeDown;
+  final VoidCallback? onSwipeLeft;
+  final VoidCallback? onSwipeRight;
 
   const SimpleGestureDetector({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
     this.swipeConfig = const SimpleSwipeConfig(),
     this.behavior,
     this.onSwipeUp,
@@ -30,8 +30,8 @@ class SimpleGestureDetector extends StatefulWidget {
 }
 
 class _SimpleGestureDetectorState extends State<SimpleGestureDetector> {
-  Offset _initialSwipeOffset;
-  Offset _finalSwipeOffset;
+  Offset? _initialSwipeOffset;
+  late Offset _finalSwipeOffset;
 
   void _onVerticalDragStart(DragStartDetails details) {
     _initialSwipeOffset = details.globalPosition;
@@ -40,17 +40,18 @@ class _SimpleGestureDetectorState extends State<SimpleGestureDetector> {
   void _onVerticalDragUpdate(DragUpdateDetails details) {
     _finalSwipeOffset = details.globalPosition;
 
-    if (widget.swipeConfig.swipeDetectionMoment == SwipeDetectionMoment.onUpdate) {
+    if (widget.swipeConfig.swipeDetectionMoment ==
+        SwipeDetectionMoment.onUpdate) {
       if (_initialSwipeOffset != null) {
-        final offsetDifference = _initialSwipeOffset.dy - _finalSwipeOffset.dy;
+        final offsetDifference = _initialSwipeOffset!.dy - _finalSwipeOffset.dy;
 
         if (offsetDifference.abs() > widget.swipeConfig.verticalThreshold) {
           _initialSwipeOffset = null;
           final isSwipeUp = offsetDifference > 0;
           if (isSwipeUp) {
-            widget.onSwipeUp();
+            widget.onSwipeUp!();
           } else {
-            widget.onSwipeDown();
+            widget.onSwipeDown!();
           }
         }
       }
@@ -63,15 +64,15 @@ class _SimpleGestureDetectorState extends State<SimpleGestureDetector> {
     }
 
     if (_initialSwipeOffset != null) {
-      final offsetDifference = _initialSwipeOffset.dy - _finalSwipeOffset.dy;
+      final offsetDifference = _initialSwipeOffset!.dy - _finalSwipeOffset.dy;
 
       if (offsetDifference.abs() > widget.swipeConfig.verticalThreshold) {
         _initialSwipeOffset = null;
         final isSwipeUp = offsetDifference > 0;
         if (isSwipeUp) {
-          widget.onSwipeUp();
+          widget.onSwipeUp!();
         } else {
-          widget.onSwipeDown();
+          widget.onSwipeDown!();
         }
       }
     }
@@ -86,15 +87,15 @@ class _SimpleGestureDetectorState extends State<SimpleGestureDetector> {
 
     if (widget.swipeConfig.swipeDetectionMoment == SwipeDetectionMoment.onUpdate) {
       if (_initialSwipeOffset != null) {
-        final offsetDifference = _initialSwipeOffset.dx - _finalSwipeOffset.dx;
+        final offsetDifference = _initialSwipeOffset!.dx - _finalSwipeOffset.dx;
 
         if (offsetDifference.abs() > widget.swipeConfig.horizontalThreshold) {
           _initialSwipeOffset = null;
           final isSwipeLeft = offsetDifference > 0;
           if (isSwipeLeft) {
-            widget.onSwipeLeft();
+            widget.onSwipeLeft!();
           } else {
-            widget.onSwipeRight();
+            widget.onSwipeRight!();
           }
         }
       }
@@ -107,15 +108,15 @@ class _SimpleGestureDetectorState extends State<SimpleGestureDetector> {
     }
 
     if (_initialSwipeOffset != null) {
-      final offsetDifference = _initialSwipeOffset.dx - _finalSwipeOffset.dx;
+      final offsetDifference = _initialSwipeOffset!.dx - _finalSwipeOffset.dx;
 
       if (offsetDifference.abs() > widget.swipeConfig.horizontalThreshold) {
         _initialSwipeOffset = null;
         final isSwipeLeft = offsetDifference > 0;
         if (isSwipeLeft) {
-          widget.onSwipeLeft();
+          widget.onSwipeLeft!();
         } else {
-          widget.onSwipeRight();
+          widget.onSwipeRight!();
         }
       }
     }

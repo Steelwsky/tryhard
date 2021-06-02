@@ -3,13 +3,13 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:tryhard/controller/user_controller.dart';
 import 'package:tryhard/controller/workout_controller.dart';
-import 'package:tryhard/pages/login_page.dart';
+import 'package:tryhard/screens/login_page.dart';
 import 'package:tryhard/style/theme.dart';
-import 'pages/success_signin_page.dart';
 
 import 'controller/gymnastics_controller.dart';
 import 'controller/page_controller.dart';
 import 'firestore/cloud_storage.dart';
+import 'screens/success_signin_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,8 +29,8 @@ class MyApp extends StatefulWidget {
     this.loginProvider,
   });
 
-  final CloudStorage myDatabase;
-  final LoginProvider loginProvider;
+  final CloudStorage? myDatabase;
+  final LoginProvider? loginProvider;
   final UserLoggedInState userLoggedInState = UserLoggedInState();
 
   @override
@@ -49,19 +49,17 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
         providers: [
           Provider<UserController>(
-            create: (_) =>
-                UserController(
-                  persistUser: widget.myDatabase.saveUser,
-                  loginProvider: widget.loginProvider,
-                  userLoggedInState: widget.userLoggedInState,
-                ),
+            create: (_) => UserController(
+              persistUser: widget.myDatabase!.saveUser,
+              loginProvider: widget.loginProvider,
+              userLoggedInState: widget.userLoggedInState,
+            ),
           ),
           Provider<WorkoutController>(
-            create: (_) =>
-                WorkoutController(
-                  myDatabase: widget.myDatabase,
-                  userLoggedInState: widget.userLoggedInState,
-                ),
+            create: (_) => WorkoutController(
+              myDatabase: widget.myDatabase,
+              userLoggedInState: widget.userLoggedInState,
+            ),
             dispose: (context, controller) {
               controller.unsubscribe();
             },
@@ -79,4 +77,3 @@ class _MyAppState extends State<MyApp> {
         ));
   }
 }
-

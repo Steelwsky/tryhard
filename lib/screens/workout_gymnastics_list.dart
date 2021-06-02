@@ -1,41 +1,45 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tryhard/controller/gymnastics_controller.dart';
 import 'package:tryhard/controller/workout_controller.dart';
 import 'package:tryhard/models/workout.dart';
-import 'package:tryhard/pages/gymnastics_settings_page.dart';
+import 'package:tryhard/screens/gymnastics_settings_page.dart';
+import 'package:tryhard/utils/date_format.dart';
 import 'package:tryhard/widgets/workout_begins_time_picker.dart';
 
 class GymnasticsListForWorkout extends StatefulWidget {
-  GymnasticsListForWorkout({Key key, this.workout}) : super(key: key);
+  GymnasticsListForWorkout({Key? key, this.workout}) : super(key: key);
 
-  final Workout workout;
+  final Workout? workout;
 
   @override
-  _GymnasticsListForWorkoutState createState() => _GymnasticsListForWorkoutState();
+  _GymnasticsListForWorkoutState createState() =>
+      _GymnasticsListForWorkoutState();
 }
 
 class _GymnasticsListForWorkoutState extends State<GymnasticsListForWorkout> {
-  TextEditingController _workoutCommentEditingController;
+  TextEditingController? _workoutCommentEditingController;
 
   @override
   void initState() {
     super.initState();
-    _workoutCommentEditingController = TextEditingController(text: widget.workout.comment);
+    _workoutCommentEditingController =
+        TextEditingController(text: widget.workout!.comment);
   }
 
   @override
   Widget build(BuildContext context) {
-    final WorkoutController workoutController = Provider.of<WorkoutController>(context);
-    final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
+    final WorkoutController workoutController =
+        Provider.of<WorkoutController>(context);
+    final GymnasticsController gymnasticsController =
+        Provider.of<GymnasticsController>(context);
 
     return Scaffold(
       appBar: AppBar(
-          title: Text(widget.workout.time == null
-              ? DateFormat('dd/MM/yyyy').format(DateTime.now())
-              : DateFormat('dd/MM/yyyy').format(widget.workout.time))),
+          title: Text(widget.workout!.time == null
+              ? formattedDate(DateTime.now())
+              : formattedDate(widget.workout!.time!))),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -80,7 +84,7 @@ class _GymnasticsListForWorkoutState extends State<GymnasticsListForWorkout> {
             Navigator.of(context).push(
               MaterialPageRoute(
                   builder: (_) => GymnasticsSettingsPage(
-                        workoutGuid: widget.workout.guid,
+                    workoutGuid: widget.workout!.guid,
                       )),
             );
           }),
@@ -90,26 +94,30 @@ class _GymnasticsListForWorkoutState extends State<GymnasticsListForWorkout> {
 
 class GymnasticsList extends StatelessWidget {
   const GymnasticsList({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   //todo sort by time of workouts
   @override
   Widget build(BuildContext context) {
-    final WorkoutController workoutController = Provider.of<WorkoutController>(context);
-    final GymnasticsController gymnasticsController = Provider.of<GymnasticsController>(context);
+    final WorkoutController workoutController =
+        Provider.of<WorkoutController>(context);
+    final GymnasticsController gymnasticsController =
+        Provider.of<GymnasticsController>(context);
     return ValueListenableBuilder<Workout>(
         valueListenable: workoutController.workout,
         builder: (_, currentWorkout, __) {
           return ListView(
               key: PageStorageKey('gymnasticsList'),
-              children: currentWorkout.gymnasticsList
+              children: currentWorkout.gymnasticsList!
                   .map((gymnastics) => Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
                         child: ListTile(
                           visualDensity: VisualDensity.compact,
                           leading: Text(
-                            '# ${currentWorkout.gymnasticsList.indexOf(gymnastics) + 1}',
+                            '# ${currentWorkout.gymnasticsList!.indexOf(gymnastics) + 1}',
                             style: TextStyle(fontSize: 18),
                           ),
                           title: Text(
@@ -117,17 +125,18 @@ class GymnasticsList extends StatelessWidget {
                             maxLines: 3,
                           ),
                           subtitle: Text(
-                            gymnastics.comment,
+                            gymnastics.comment!,
                             maxLines: 3,
                           ),
                           onTap: () {
-                            gymnasticsController.setGymnasticsToNotifier(inputGymnastics: gymnastics);
+                            gymnasticsController.setGymnasticsToNotifier(
+                                inputGymnastics: gymnastics);
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                   builder: (_) => GymnasticsSettingsPage(
-                                    gymnastics: gymnastics,
-                                    workoutGuid: currentWorkout.guid,
-                                  )),
+                                        gymnastics: gymnastics,
+                                        workoutGuid: currentWorkout.guid,
+                                      )),
                             );
                             print(gymnastics.guid);
                           },

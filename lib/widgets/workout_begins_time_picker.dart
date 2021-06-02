@@ -7,7 +7,7 @@ import 'package:tryhard/style/colors.dart';
 
 class WorkoutTimePicker extends StatefulWidget {
   const WorkoutTimePicker({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class _WorkoutTimePickerState extends State<WorkoutTimePicker> {
         Padding(
           padding: const EdgeInsets.only(top: 10.0, left: 16, right: 16),
           child: Text(
-            DateFormat('HH:mm').format(workoutController.workout.value.time),
+            DateFormat('HH:mm').format(workoutController.workout.value.time!),
             style: TextStyle(fontSize: 18),
           ),
         ),

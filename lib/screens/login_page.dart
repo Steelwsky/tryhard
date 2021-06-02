@@ -3,15 +3,16 @@ import 'package:provider/provider.dart';
 import 'package:tryhard/controller/user_controller.dart';
 import 'package:tryhard/models/user.dart';
 import 'package:tryhard/style/colors.dart';
-import 'success_signin_page.dart';
 import 'package:tryhard/widgets/circular_indicator.dart';
+
+import 'success_signin_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({
     this.userController,
   });
 
-  final UserController userController;
+  final UserController? userController;
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -19,29 +20,30 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isLogged = false;
-  User user;
+  User? user;
 
-  UserController userController;
+  UserController? userController;
 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
 
-    final UserController currentUserController = Provider.of<UserController>(context);
+    final UserController currentUserController =
+        Provider.of<UserController>(context);
     if (currentUserController != userController) {
       userController = currentUserController;
       print('userController = currentUserController');
-      if (await userController.isSignIn()) {
+      if (await userController!.isSignIn()) {
         print('await userController.isSignIn() --- TRUE');
-        userController.onSignIn();
+        userController!.onSignIn();
       }
     }
   } //google asyncSnapshot sign in.  AsyncSnapshot use it frequently!!!
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<AsyncSnapshot<User>>(
-      valueListenable: userController.userProfile,
+    return ValueListenableBuilder<AsyncSnapshot<User>?>(
+      valueListenable: userController!.userProfile,
       builder: (_, snapshot, __) {
         if (snapshot == null) {
           print('snapshot == null || !snapshot.hasData');
@@ -62,7 +64,7 @@ class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserController userController = Provider.of<UserController>(context);
-    return ValueListenableBuilder<AsyncSnapshot<User>>(
+    return ValueListenableBuilder<AsyncSnapshot<User>?>(
         valueListenable: userController.userProfile,
         builder: (_, snapshot, __) {
           return Scaffold(

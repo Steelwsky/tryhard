@@ -1,23 +1,22 @@
-import 'package:date_utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import "package:intl/intl.dart";
 import 'package:tryhard/style/colors.dart';
 
 class CalendarTile extends StatelessWidget {
-  final VoidCallback onDateSelected;
-  final DateTime date;
-  final String dayOfWeek;
+  final VoidCallback? onDateSelected;
+  final DateTime? date;
+  final String? dayOfWeek;
   final bool isDayOfWeek;
   final bool isSelected;
   final bool inMonth;
-  final List events;
-  final TextStyle dayOfWeekStyle;
-  final TextStyle dateStyles;
-  final Widget child;
-  final Color selectedColor;
-  final Color todayColor;
-  final Color eventColor;
-  final Color eventDoneColor;
+  final List? events;
+  final TextStyle? dayOfWeekStyle;
+  final TextStyle? dateStyles;
+  final Widget? child;
+  final Color? selectedColor;
+  final Color? todayColor;
+  final Color? eventColor;
+  final Color? eventDoneColor;
 
   CalendarTile({
     this.onDateSelected,
@@ -42,7 +41,7 @@ class CalendarTile extends StatelessWidget {
         child: new Container(
           alignment: Alignment.center,
           child: new Text(
-            dayOfWeek,
+            dayOfWeek!,
             style: dayOfWeekStyle,
           ),
         ),
@@ -61,7 +60,9 @@ class CalendarTile extends StatelessWidget {
                 ? BoxDecoration(
                     shape: BoxShape.circle,
                     color: selectedColor != null
-                        ? Utils.isSameDay(this.date, DateTime.now()) ? PURPLE : selectedColor
+                        ? DateUtils.isSameDay(this.date, DateTime.now())
+                            ? PURPLE
+                            : selectedColor
                         : Theme.of(context).primaryColor,
                   )
                 : BoxDecoration(),
@@ -70,30 +71,36 @@ class CalendarTile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  DateFormat("d").format(date),
+                  DateFormat("d").format(date!),
                   style: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w400,
                       color: isSelected
                           ? Colors.white
-                          : Utils.isSameDay(this.date, DateTime.now())
-                          ? todayColor
-                          : inMonth ? Colors.white : Colors.grey),
+                          : DateUtils.isSameDay(this.date, DateTime.now())
+                              ? todayColor
+                              : inMonth
+                                  ? Colors.white
+                                  : Colors.grey),
                 ),
-                events != null && events.length > 0
+                events != null && events!.length > 0
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: events.map((event) {
+                    children: events!.map((event) {
                           eventCount++;
                           if (eventCount > 3) return Container();
                           return Container(
-                            margin: EdgeInsets.only(left: 2.0, right: 2.0, top: 1.0),
+                            margin: EdgeInsets.only(
+                                left: 2.0, right: 2.0, top: 1.0),
                             width: 5.0,
                             height: 5.0,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               //todo add something like previous isDone
-                              color: Utils.isSameDay(this.date, DateTime.now()) ? GREY : PURPLE,
+                              color:
+                                  DateUtils.isSameDay(this.date, DateTime.now())
+                                      ? GREY
+                                      : PURPLE,
 //                              color: Theme.of(context).primaryColor,
 //                              color: event["isDone"]
 //                                  ? eventDoneColor ??

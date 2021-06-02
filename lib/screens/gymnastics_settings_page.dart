@@ -15,10 +15,11 @@ import 'package:tryhard/widgets/gymnastics_settings_form.dart';
 * */
 
 class GymnasticsSettingsPage extends StatelessWidget {
-  GymnasticsSettingsPage({Key key, this.gymnastics, this.workoutGuid}) : super(key: key);
+  GymnasticsSettingsPage({Key? key, this.gymnastics, this.workoutGuid})
+      : super(key: key);
 
-  final String workoutGuid;
-  final Gymnastics gymnastics;
+  final String? workoutGuid;
+  final Gymnastics? gymnastics;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +28,7 @@ class GymnasticsSettingsPage extends StatelessWidget {
         title: gymnastics == null
             ? Text('Creating')
             : Text(
-                '${gymnastics.exercise}',
+                '${gymnastics!.exercise}',
                 maxLines: 1,
               ),
       ),
